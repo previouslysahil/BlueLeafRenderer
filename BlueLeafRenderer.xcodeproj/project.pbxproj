@@ -11,6 +11,9 @@
 		6480A44D292F09F000C6F19C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6480A44C292F09F000C6F19C /* ContentView.swift */; };
 		6480A44F292F09F200C6F19C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6480A44E292F09F200C6F19C /* Assets.xcassets */; };
 		6480A452292F09F200C6F19C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6480A451292F09F200C6F19C /* Preview Assets.xcassets */; };
+		6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6480A45B292F1A8E00C6F19C /* ImageFactory.swift */; };
+		6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6480A475292F2D9200C6F19C /* Renderer.cpp */; };
+		6480A47A292F372700C6F19C /* RendererBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6480A479292F372700C6F19C /* RendererBridge.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +23,12 @@
 		6480A44E292F09F200C6F19C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6480A451292F09F200C6F19C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6480A453292F09F200C6F19C /* BlueLeafRenderer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BlueLeafRenderer.entitlements; sourceTree = "<group>"; };
+		6480A45B292F1A8E00C6F19C /* ImageFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFactory.swift; sourceTree = "<group>"; };
+		6480A474292F2D9100C6F19C /* BlueLeafRenderer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlueLeafRenderer-Bridging-Header.h"; sourceTree = "<group>"; };
+		6480A475292F2D9200C6F19C /* Renderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
+		6480A476292F2D9200C6F19C /* Renderer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Renderer.hpp; sourceTree = "<group>"; };
+		6480A478292F358100C6F19C /* RendererBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererBridge.h; sourceTree = "<group>"; };
+		6480A479292F372700C6F19C /* RendererBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererBridge.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +61,9 @@
 		6480A449292F09F000C6F19C /* BlueLeafRenderer */ = {
 			isa = PBXGroup;
 			children = (
+				6480A45D292F1E5E00C6F19C /* Renderer */,
 				6480A44A292F09F000C6F19C /* BlueLeafRendererApp.swift */,
+				6480A45B292F1A8E00C6F19C /* ImageFactory.swift */,
 				6480A44C292F09F000C6F19C /* ContentView.swift */,
 				6480A44E292F09F200C6F19C /* Assets.xcassets */,
 				6480A453292F09F200C6F19C /* BlueLeafRenderer.entitlements */,
@@ -67,6 +78,18 @@
 				6480A451292F09F200C6F19C /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6480A45D292F1E5E00C6F19C /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				6480A475292F2D9200C6F19C /* Renderer.cpp */,
+				6480A476292F2D9200C6F19C /* Renderer.hpp */,
+				6480A474292F2D9100C6F19C /* BlueLeafRenderer-Bridging-Header.h */,
+				6480A478292F358100C6F19C /* RendererBridge.h */,
+				6480A479292F372700C6F19C /* RendererBridge.mm */,
+			);
+			path = Renderer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -101,6 +124,7 @@
 				TargetAttributes = {
 					6480A446292F09F000C6F19C = {
 						CreatedOnToolsVersion = 14.1;
+						LastSwiftMigration = 1410;
 					};
 				};
 			};
@@ -139,8 +163,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */,
 				6480A44D292F09F000C6F19C /* ContentView.swift in Sources */,
 				6480A44B292F09F000C6F19C /* BlueLeafRendererApp.swift in Sources */,
+				6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */,
+				6480A47A292F372700C6F19C /* RendererBridge.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +292,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BlueLeafRenderer/BlueLeafRenderer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -283,6 +311,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sahilsrivastava.BlueLeafRenderer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BlueLeafRenderer/Renderer/BlueLeafRenderer-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -292,6 +322,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BlueLeafRenderer/BlueLeafRenderer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -310,6 +341,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sahilsrivastava.BlueLeafRenderer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BlueLeafRenderer/Renderer/BlueLeafRenderer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
