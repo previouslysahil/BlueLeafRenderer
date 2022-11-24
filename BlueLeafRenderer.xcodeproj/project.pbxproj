@@ -14,6 +14,9 @@
 		6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6480A45B292F1A8E00C6F19C /* ImageFactory.swift */; };
 		6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6480A475292F2D9200C6F19C /* Renderer.cpp */; };
 		6480A47A292F372700C6F19C /* RendererBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6480A479292F372700C6F19C /* RendererBridge.mm */; };
+		64907CC6292FF52000A1C486 /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CC4292FF52000A1C486 /* Vector3.cpp */; };
+		64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CCA292FF7EB00A1C486 /* Color.cpp */; };
+		64907CD2292FFF9F00A1C486 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CD0292FFF9F00A1C486 /* Ray.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +32,13 @@
 		6480A476292F2D9200C6F19C /* Renderer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Renderer.hpp; sourceTree = "<group>"; };
 		6480A478292F358100C6F19C /* RendererBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererBridge.h; sourceTree = "<group>"; };
 		6480A479292F372700C6F19C /* RendererBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererBridge.mm; sourceTree = "<group>"; };
+		64907CC4292FF52000A1C486 /* Vector3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3.cpp; sourceTree = "<group>"; };
+		64907CC5292FF52000A1C486 /* Vector3.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Vector3.hpp; sourceTree = "<group>"; };
+		64907CCA292FF7EB00A1C486 /* Color.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
+		64907CCB292FF7EB00A1C486 /* Color.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Color.hpp; sourceTree = "<group>"; };
+		64907CD0292FFF9F00A1C486 /* Ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ray.cpp; sourceTree = "<group>"; };
+		64907CD1292FFF9F00A1C486 /* Ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Ray.hpp; sourceTree = "<group>"; };
+		64907CD4293001B900A1C486 /* LinearAlgebra.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LinearAlgebra.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +98,13 @@
 				6480A474292F2D9100C6F19C /* BlueLeafRenderer-Bridging-Header.h */,
 				6480A478292F358100C6F19C /* RendererBridge.h */,
 				6480A479292F372700C6F19C /* RendererBridge.mm */,
+				64907CC4292FF52000A1C486 /* Vector3.cpp */,
+				64907CC5292FF52000A1C486 /* Vector3.hpp */,
+				64907CCA292FF7EB00A1C486 /* Color.cpp */,
+				64907CCB292FF7EB00A1C486 /* Color.hpp */,
+				64907CD0292FFF9F00A1C486 /* Ray.cpp */,
+				64907CD1292FFF9F00A1C486 /* Ray.hpp */,
+				64907CD4293001B900A1C486 /* LinearAlgebra.hpp */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -163,10 +180,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64907CD2292FFF9F00A1C486 /* Ray.cpp in Sources */,
 				6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */,
+				64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */,
 				6480A44D292F09F000C6F19C /* ContentView.swift in Sources */,
 				6480A44B292F09F000C6F19C /* BlueLeafRendererApp.swift in Sources */,
 				6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */,
+				64907CC6292FF52000A1C486 /* Vector3.cpp in Sources */,
 				6480A47A292F372700C6F19C /* RendererBridge.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,6 +351,7 @@
 				DEVELOPMENT_TEAM = 5XCZQ7C9J7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (

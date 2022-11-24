@@ -7,20 +7,7 @@
 
 import Foundation
 import Cocoa
-import Accelerate
 
-extension NSImage {
-    class func swatchWithColor(color: NSColor, size: NSSize) -> NSImage {
-        let image = NSImage(size: size)
-        image.lockFocus()
-        color.drawSwatch(in: NSRect(origin: .zero, size: size))
-        image.unlockFocus()
-        return image
-    }
-}
-
-
-// uses: https://stackoverflow.com/questions/31661023/change-color-of-certain-pixels-in-a-uiimage
 class ImageFactory {
     func create(using renderBuffer: UnsafeMutablePointer<UInt32>, width: Int, height: Int) -> CGImage {
         // Make our colorspace and bitmap info
