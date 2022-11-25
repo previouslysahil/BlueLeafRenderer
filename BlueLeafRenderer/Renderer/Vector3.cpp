@@ -10,7 +10,7 @@
 #include <cmath>
 
 /// Default constructor makes zerod float vector
-Vector3::Vector3(): x(0.0f), y(0.0f), z(0.0f) {}
+Vector3::Vector3(): x(0), y(0), z(0) {}
 
 
 /// Makes float vector with given x, y, z coordinates

@@ -10,6 +10,7 @@
 
 #include "Color.hpp"
 #include "Ray.hpp"
+#include "World.hpp"
 
 #include <stdint.h>
 
@@ -17,7 +18,7 @@ class Renderer {
 public:
     uint32_t* render_buffer(int width, int height) const;
 private:
-    Color ray_color(const Ray& r) const;
+    Color ray_color(const Ray& ray, World& world) const;
 };
 
 #endif /* Renderer_hpp */

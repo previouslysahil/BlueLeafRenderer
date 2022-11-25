@@ -9,7 +9,7 @@
 #include <iostream>
 
 /// Default constructor makes a solid black color
-Color::Color(): r(0.0f), b(0.0f), g(0.0f), a(1.0f) {}
+Color::Color(): r(0), b(0), g(0), a(0) {}
 
 
 /// Creates float RGBA values within the range of 0-1, alpha preset to 1.0f
@@ -18,7 +18,7 @@ Color::Color(): r(0.0f), b(0.0f), g(0.0f), a(1.0f) {}
 ///   - r: Red value
 ///   - g: Green value
 ///   - b: Blue value
-Color::Color(float r, float g, float b): r(r), b(b), g(g), a(1.0f) {}
+Color::Color(float r, float g, float b): r(r), b(b), g(g), a(0) {}
 
 
 /// Creates float RGBA values within the range of 0-1

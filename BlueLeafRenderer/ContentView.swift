@@ -13,8 +13,8 @@ struct ContentView: View {
     @State var image: CGImage?
     
     private let factory = ImageFactory()
-    private let width = 256
-    private let height = 256
+    private let width = 400
+    private let height = 225
     
     var body: some View {
         ZStack {
