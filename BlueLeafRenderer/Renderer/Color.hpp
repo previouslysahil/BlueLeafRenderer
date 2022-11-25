@@ -12,16 +12,16 @@
 
 class Color {
 public:
-    float r;
-    float g;
-    float b;
-    float a;
+    double r;
+    double g;
+    double b;
+    double a;
 public:
     Color();
-    Color(float r, float g, float b);
-    Color(float r, float g, float b, float a);
+    Color(double r, double g, double b);
+    Color(double r, double g, double b, double a);
     
-    uint32_t pixel() const;
+    uint32_t rgba() const;
 };
 
 #endif /* Color_hpp */

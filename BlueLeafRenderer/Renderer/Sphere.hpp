@@ -16,17 +16,17 @@ public:
     Point3 point_of_hit;
     Vector3 surface_normal;
     Ray ray_of_hit;
-    float t;
+    double t;
     bool front_face;
     
     Point3 center;
-    float radius;
+    double radius;
     
 public:
     Sphere();
-    Sphere(Point3 center, float radius);
+    Sphere(Point3 center, double radius);
     
-    bool hit(const Ray& ray, float t_min, float t_max);
+    bool hit(const Ray& ray, double t_min, double t_max);
     void calculate_hit();
 private:
     void set_surface_normal(const Ray& ray, const Vector3& outward_normal);

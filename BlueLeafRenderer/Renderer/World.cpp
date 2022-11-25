@@ -28,9 +28,9 @@ void World::clear() {
 ///   - surface_normal: The normal at the point our ray hit our object
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool World::findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, float t_min, float t_max) {
+bool World::findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, double t_min, double t_max) {
     bool found_object = false;
-    float found_t = t_max;
+    double found_t = t_max;
     int found_idx = -1;
     
     for (int i = 0; i < spheres.size(); i++) {

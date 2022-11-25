@@ -7,21 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		645D3677293150D30062DA78 /* RendererWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645D3675293150D30062DA78 /* RendererWrapper.cpp */; };
 		6480A44B292F09F000C6F19C /* BlueLeafRendererApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6480A44A292F09F000C6F19C /* BlueLeafRendererApp.swift */; };
 		6480A44D292F09F000C6F19C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6480A44C292F09F000C6F19C /* ContentView.swift */; };
 		6480A44F292F09F200C6F19C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6480A44E292F09F200C6F19C /* Assets.xcassets */; };
 		6480A452292F09F200C6F19C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6480A451292F09F200C6F19C /* Preview Assets.xcassets */; };
 		6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6480A45B292F1A8E00C6F19C /* ImageFactory.swift */; };
 		6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6480A475292F2D9200C6F19C /* Renderer.cpp */; };
-		6480A47A292F372700C6F19C /* RendererBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6480A479292F372700C6F19C /* RendererBridge.mm */; };
 		64907CC6292FF52000A1C486 /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CC4292FF52000A1C486 /* Vector3.cpp */; };
 		64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CCA292FF7EB00A1C486 /* Color.cpp */; };
 		64907CD2292FFF9F00A1C486 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CD0292FFF9F00A1C486 /* Ray.cpp */; };
 		64907CDB2930331400A1C486 /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CD92930331400A1C486 /* Sphere.cpp */; };
 		64907CDE2930420700A1C486 /* World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CDC2930420700A1C486 /* World.cpp */; };
+		64907CE1293073C500A1C486 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CDF293073C500A1C486 /* Camera.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		645D3675293150D30062DA78 /* RendererWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RendererWrapper.cpp; sourceTree = "<group>"; };
+		645D3676293150D30062DA78 /* RendererWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererWrapper.h; sourceTree = "<group>"; };
 		6480A447292F09F000C6F19C /* BlueLeafRenderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlueLeafRenderer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6480A44A292F09F000C6F19C /* BlueLeafRendererApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueLeafRendererApp.swift; sourceTree = "<group>"; };
 		6480A44C292F09F000C6F19C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -32,8 +35,6 @@
 		6480A474292F2D9100C6F19C /* BlueLeafRenderer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlueLeafRenderer-Bridging-Header.h"; sourceTree = "<group>"; };
 		6480A475292F2D9200C6F19C /* Renderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
 		6480A476292F2D9200C6F19C /* Renderer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Renderer.hpp; sourceTree = "<group>"; };
-		6480A478292F358100C6F19C /* RendererBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RendererBridge.h; sourceTree = "<group>"; };
-		6480A479292F372700C6F19C /* RendererBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RendererBridge.mm; sourceTree = "<group>"; };
 		64907CC4292FF52000A1C486 /* Vector3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3.cpp; sourceTree = "<group>"; };
 		64907CC5292FF52000A1C486 /* Vector3.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Vector3.hpp; sourceTree = "<group>"; };
 		64907CCA292FF7EB00A1C486 /* Color.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
@@ -45,6 +46,9 @@
 		64907CDA2930331400A1C486 /* Sphere.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Sphere.hpp; sourceTree = "<group>"; };
 		64907CDC2930420700A1C486 /* World.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = World.cpp; sourceTree = "<group>"; };
 		64907CDD2930420700A1C486 /* World.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = World.hpp; sourceTree = "<group>"; };
+		64907CDF293073C500A1C486 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		64907CE0293073C500A1C486 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		64907CE22930785000A1C486 /* Utility.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Utility.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,8 +106,8 @@
 				6480A475292F2D9200C6F19C /* Renderer.cpp */,
 				6480A476292F2D9200C6F19C /* Renderer.hpp */,
 				6480A474292F2D9100C6F19C /* BlueLeafRenderer-Bridging-Header.h */,
-				6480A478292F358100C6F19C /* RendererBridge.h */,
-				6480A479292F372700C6F19C /* RendererBridge.mm */,
+				645D3675293150D30062DA78 /* RendererWrapper.cpp */,
+				645D3676293150D30062DA78 /* RendererWrapper.h */,
 				64907CC4292FF52000A1C486 /* Vector3.cpp */,
 				64907CC5292FF52000A1C486 /* Vector3.hpp */,
 				64907CCA292FF7EB00A1C486 /* Color.cpp */,
@@ -115,6 +119,9 @@
 				64907CDA2930331400A1C486 /* Sphere.hpp */,
 				64907CDC2930420700A1C486 /* World.cpp */,
 				64907CDD2930420700A1C486 /* World.hpp */,
+				64907CDF293073C500A1C486 /* Camera.cpp */,
+				64907CE0293073C500A1C486 /* Camera.hpp */,
+				64907CE22930785000A1C486 /* Utility.hpp */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -194,11 +201,12 @@
 				6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */,
 				64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */,
 				6480A44D292F09F000C6F19C /* ContentView.swift in Sources */,
+				645D3677293150D30062DA78 /* RendererWrapper.cpp in Sources */,
+				64907CE1293073C500A1C486 /* Camera.cpp in Sources */,
 				6480A44B292F09F000C6F19C /* BlueLeafRendererApp.swift in Sources */,
 				6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */,
 				64907CDE2930420700A1C486 /* World.cpp in Sources */,
 				64907CC6292FF52000A1C486 /* Vector3.cpp in Sources */,
-				6480A47A292F372700C6F19C /* RendererBridge.mm in Sources */,
 				64907CDB2930331400A1C486 /* Sphere.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

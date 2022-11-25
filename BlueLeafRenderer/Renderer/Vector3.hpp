@@ -10,15 +10,15 @@
 
 class Vector3 {
 public:
-    float x;
-    float y;
-    float z;
+    double x;
+    double y;
+    double z;
 public:
     Vector3();
-    Vector3(float x, float y, float z);
+    Vector3(double x, double y, double z);
     
-    float length() const;
-    float length_squared() const;
+    double length() const;
+    double length_squared() const;
 };
 
 /// The mathematical application and interchangeability of points

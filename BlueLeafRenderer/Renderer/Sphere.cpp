@@ -16,7 +16,7 @@ Sphere::Sphere(): point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_fa
 /// - Parameters:
 ///   - center: The center of our circle
 ///   - radius: The radius of our circle
-Sphere::Sphere(Point3 center, float radius): point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(center), radius(radius) {}
+Sphere::Sphere(Point3 center, double radius): point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(center), radius(radius) {}
 
 /// Calculates the hit equation of sphere given by (A + tb - C)(A + tb - C) = r^2
 /// by solving for t, less than 0 means no miss, exactly 0 means 1 hit, greater
@@ -26,19 +26,19 @@ Sphere::Sphere(Point3 center, float radius): point_of_hit(), surface_normal(), r
 ///   - ray: The ray we cast from the origin point to our viewport
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool Sphere::hit(const Ray &ray, float t_min, float t_max) {
+bool Sphere::hit(const Ray &ray, double t_min, double t_max) {
     Vector3 oc = ray.origin - center;
-    float a = ray.direction.length_squared();
-    float half_b = dot(oc, ray.direction);
-    float c = oc.length_squared() - radius * radius;
+    double a = ray.direction.length_squared();
+    double half_b = dot(oc, ray.direction);
+    double c = oc.length_squared() - radius * radius;
     
-    float discriminant = half_b * half_b - a * c;
+    double discriminant = half_b * half_b - a * c;
     if (discriminant < 0) return false;
-    float sqrtd = std::sqrt(discriminant);
+    double sqrtd = std::sqrt(discriminant);
     
     // Find the nearest t that lies in our range if we did hit
     // our sphere, start with - root
-    float root = (-half_b - sqrtd) / a;
+    double root = (-half_b - sqrtd) / a;
     if (root < t_min || t_max < root) {
         // - Root didnt work try + root
         root = (-half_b + sqrtd) / a;

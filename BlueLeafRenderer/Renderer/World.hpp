@@ -22,7 +22,7 @@ public:
     void add(Sphere& sphere);
     void clear();
     
-    bool findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, float t_min, float t_max);
+    bool findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, double t_min, double t_max);
 };
 
 #endif /* World_hpp */

@@ -11,14 +11,28 @@
 #include "Color.hpp"
 #include "Ray.hpp"
 #include "World.hpp"
+#include "Camera.hpp"
 
 #include <stdint.h>
+#include <vector>
 
 class Renderer {
 public:
-    uint32_t* render_buffer(int width, int height) const;
+    std::vector<Color> pixel_colors;
+    int width;
+    int height;
+    int samples_per_pixel;
+    
 private:
-    Color ray_color(const Ray& ray, World& world) const;
+    int max_bounces;
+    int buffer_pos;
+    World world;
+    Camera camera;
+public:
+    Renderer(int width, int height, int samples_per_pixel);
+    uint32_t* render_buffer();
+private:
+    Color ray_color(const Ray& ray, World& world, int bounces) const;
 };
 
 #endif /* Renderer_hpp */

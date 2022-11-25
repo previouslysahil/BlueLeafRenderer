@@ -52,19 +52,25 @@ struct ContentView: View {
             .padding()
         }
         .edgesIgnoringSafeArea(.all)
-        .onAppear() {
-            Task {
-                let start = CFAbsoluteTimeGetCurrent()
-                let renderBuffer = RendererBridge().renderBuffer(Int32(width), by: Int32(height))
-                let image = factory.create(using: renderBuffer!, width: width, height: height)
-                let diff = start - CFAbsoluteTimeGetCurrent()
-                print("Took \(diff) seconds")
-                await MainActor.run {
-                    withAnimation(.spring()) {
-                        self.image = image
-                    }
+        .task {
+            // Still seems to be running on main thread
+            print("Started rendering")
+            let startRender = CFAbsoluteTimeGetCurrent()
+            let renderer = Renderer_init(Int32(width), Int32(height), Int32(100))
+            let renderBuffer = Renderer_render_buffer(renderer)
+            let diffRender = CFAbsoluteTimeGetCurrent() - startRender
+            print("Rendering took \(diffRender) seconds")
+            let startImageCreate = CFAbsoluteTimeGetCurrent()
+            let image = factory.create(using: renderBuffer!, width: width, height: height)
+            let diffImageCreate = CFAbsoluteTimeGetCurrent() - startImageCreate
+            print("Image create took \(diffImageCreate) seconds")
+            await MainActor.run {
+                withAnimation(.spring()) {
+                    self.image = image
                 }
             }
+            // Deinitalize our renderer when we are done with it
+            Renderer_deinit(renderer)
         }
     }
 }
