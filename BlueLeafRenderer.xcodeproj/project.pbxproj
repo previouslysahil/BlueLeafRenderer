@@ -17,10 +17,10 @@
 		64907CC6292FF52000A1C486 /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CC4292FF52000A1C486 /* Vector3.cpp */; };
 		64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CCA292FF7EB00A1C486 /* Color.cpp */; };
 		64907CD2292FFF9F00A1C486 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CD0292FFF9F00A1C486 /* Ray.cpp */; };
-		64907CDB2930331400A1C486 /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CD92930331400A1C486 /* Sphere.cpp */; };
-		64907CDE2930420700A1C486 /* World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CDC2930420700A1C486 /* World.cpp */; };
+		64907CDE2930420700A1C486 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CDC2930420700A1C486 /* Scene.cpp */; };
 		64907CE1293073C500A1C486 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CDF293073C500A1C486 /* Camera.cpp */; };
 		64B144F12931976800265549 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64B144F02931976800265549 /* Renderer.swift */; };
+		64BD3527293299A3004FC9ED /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD3525293299A3004FC9ED /* Object.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,14 +43,14 @@
 		64907CD0292FFF9F00A1C486 /* Ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ray.cpp; sourceTree = "<group>"; };
 		64907CD1292FFF9F00A1C486 /* Ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Ray.hpp; sourceTree = "<group>"; };
 		64907CD4293001B900A1C486 /* LinearAlgebra.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LinearAlgebra.hpp; sourceTree = "<group>"; };
-		64907CD92930331400A1C486 /* Sphere.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
-		64907CDA2930331400A1C486 /* Sphere.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Sphere.hpp; sourceTree = "<group>"; };
-		64907CDC2930420700A1C486 /* World.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = World.cpp; sourceTree = "<group>"; };
-		64907CDD2930420700A1C486 /* World.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = World.hpp; sourceTree = "<group>"; };
+		64907CDC2930420700A1C486 /* Scene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
+		64907CDD2930420700A1C486 /* Scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
 		64907CDF293073C500A1C486 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		64907CE0293073C500A1C486 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		64907CE22930785000A1C486 /* Utility.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Utility.hpp; sourceTree = "<group>"; };
 		64B144F02931976800265549 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		64BD3525293299A3004FC9ED /* Object.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Object.cpp; sourceTree = "<group>"; };
+		64BD3526293299A3004FC9ED /* Object.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Object.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,13 +118,13 @@
 				64907CD0292FFF9F00A1C486 /* Ray.cpp */,
 				64907CD1292FFF9F00A1C486 /* Ray.hpp */,
 				64907CD4293001B900A1C486 /* LinearAlgebra.hpp */,
-				64907CD92930331400A1C486 /* Sphere.cpp */,
-				64907CDA2930331400A1C486 /* Sphere.hpp */,
-				64907CDC2930420700A1C486 /* World.cpp */,
-				64907CDD2930420700A1C486 /* World.hpp */,
+				64907CDC2930420700A1C486 /* Scene.cpp */,
+				64907CDD2930420700A1C486 /* Scene.hpp */,
 				64907CDF293073C500A1C486 /* Camera.cpp */,
 				64907CE0293073C500A1C486 /* Camera.hpp */,
 				64907CE22930785000A1C486 /* Utility.hpp */,
+				64BD3525293299A3004FC9ED /* Object.cpp */,
+				64BD3526293299A3004FC9ED /* Object.hpp */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -204,14 +204,14 @@
 				6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */,
 				64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */,
 				6480A44D292F09F000C6F19C /* ContentView.swift in Sources */,
+				64BD3527293299A3004FC9ED /* Object.cpp in Sources */,
 				64B144F12931976800265549 /* Renderer.swift in Sources */,
 				645D3677293150D30062DA78 /* RendererWrapper.cpp in Sources */,
 				64907CE1293073C500A1C486 /* Camera.cpp in Sources */,
 				6480A44B292F09F000C6F19C /* BlueLeafRendererApp.swift in Sources */,
 				6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */,
-				64907CDE2930420700A1C486 /* World.cpp in Sources */,
+				64907CDE2930420700A1C486 /* Scene.cpp in Sources */,
 				64907CC6292FF52000A1C486 /* Vector3.cpp in Sources */,
-				64907CDB2930331400A1C486 /* Sphere.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

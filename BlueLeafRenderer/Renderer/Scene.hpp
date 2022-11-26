@@ -1,28 +1,28 @@
 //
-//  World.hpp
+//  Scene.hpp
 //  BlueLeafRenderer
 //
 //  Created by Sahil Srivastava on 11/24/22.
 //
 
-#ifndef World_hpp
-#define World_hpp
+#ifndef Scene_hpp
+#define Scene_hpp
 
-#include "Sphere.hpp"
+#include "Object.hpp"
 
 #include <vector>
 
-class World {
+class Scene {
 public:
-    std::vector<Sphere> spheres;
+    std::vector<Object> objects;
     
 public:
-    World();
+    Scene();
     
-    void add(Sphere& sphere);
+    void add(Object& object);
     void clear();
     
     bool findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, double t_min, double t_max);
 };
 
-#endif /* World_hpp */
+#endif /* Scene_hpp */

@@ -6,7 +6,7 @@
 //
 
 #include "Renderer.hpp"
-#include "Sphere.hpp"
+#include "Object.hpp"
 #include "Utility.hpp"
 
 #include <cmath>
@@ -25,20 +25,20 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     width(width), height(height),
     samples_per_pixel(samples_per_pixel),
     max_bounces(max_bounces),
-    world(),
+    scene(),
     camera(double(width), double(height))
 {
     // Our objects
-    Sphere sphere(Point3(0, 0, -1), 0.5);
-    Sphere ground(Point3(0, -100.5, -1), 100);
-    // world is default init'd so no need to init
-    world.add(sphere);
-    world.add(ground);
+    Object sphere(Point3(0, 0, -1), 0.5);
+    Object ground(Point3(0, -100.5, -1), 100);
+    // scene is default init'd so no need to init
+    scene.add(sphere);
+    scene.add(ground);
 }
 
 /// Makes our color at the point of intersection of our ray
 /// - Parameter r: Ray cast from origin to direction
-Color Renderer::ray_color(const Ray& ray, World& world, int bounces) const {
+Color Renderer::ray_color(const Ray& ray, Scene& scene, int bounces) const {
     // Only recurse our ray bounces until we have reached our limit
     if (bounces <= 0) {
         return Color(0, 0, 0);
@@ -47,14 +47,14 @@ Color Renderer::ray_color(const Ray& ray, World& world, int bounces) const {
     Point3 point_of_hit;
     Vector3 surface_normal;
     // Find an object to hit
-    if (world.findNearestObject(ray, point_of_hit, surface_normal, 0.001, std::numeric_limits<double>::infinity())) {
+    if (scene.findNearestObject(ray, point_of_hit, surface_normal, 0.001, std::numeric_limits<double>::infinity())) {
         // Find a target point that is on the surface of the unit sphere of
         // our surface normal
         Point3 target = point_of_hit + surface_normal + random_unit_vector();
         // Cast a new ray from our inital hit point to this new target point
         // in the unit sphere of our surface normal, we half our ray color each bounce
         // to simulate light falloff
-        return ray_color(Ray(point_of_hit, target - point_of_hit), world, bounces - 1) * 0.5;
+        return ray_color(Ray(point_of_hit, target - point_of_hit), scene, bounces - 1) * 0.5;
     }
     // Otherwise our ray color is the sky
     Vector3 unit_direction = unit_vector(ray.direction);
@@ -78,14 +78,14 @@ uint32_t* Renderer::render_buffer(int curr_sample) {
         for (int i = 0; i < width; i++) {
             // Get the points on our viewing grid we will cast our ray too
             // we ad randomness for anti aliasing
-            double u = (i + random_double()) / (width - 1);
-            double v = (j + random_double()) / (height - 1);
+            double u = (double(i) + random_double()) / double(width - 1);
+            double v = (double(j) + random_double()) / double(height - 1);
             // Cast our ray from the camera origin to our u,v coordinate
-            // the viewport
+            // on the viewport
             Ray ray = camera.create_ray(u, v);
             // Make our color for this pixel by creating a rolling average using the previous pixel color
             // that contains the previously averaged pixels
-            Color curr_pixel_color = ray_color(ray, world, max_bounces) * (1.0 / double(curr_sample));
+            Color curr_pixel_color = ray_color(ray, scene, max_bounces) * (1.0 / double(curr_sample));
             // The bias favoring our previous pixels should be much higher than the current pixel
             Color prev_pixel_color = pixel_colors[buffer_pos] * (double(curr_sample - 1.0) / double(curr_sample));
             // Add together to get final result

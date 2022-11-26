@@ -1,32 +1,50 @@
 //
-//  Sphere.cpp
+//  Object.cpp
 //  BlueLeafRenderer
 //
-//  Created by Sahil Srivastava on 11/24/22.
+//  Created by Sahil Srivastava on 11/26/22.
 //
 
-#include "Sphere.hpp"
-
-#include <cmath>
+#include "Object.hpp"
 
 /// Initalizes all values to zeros or false
-Sphere::Sphere(): point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(), radius(0) {}
+Object::Object(): type(Empty), point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(), radius(0) {}
 
-/// Initalizes all values to zeros or false except for center and radius which define the circles location
+/// Initalizes all values to zeros or false except for center and radius which
+/// define the circles location and sets the object type to sphere
+/// USED ONLY FOR SPHERES
 /// - Parameters:
 ///   - center: The center of our circle
 ///   - radius: The radius of our circle
-Sphere::Sphere(Point3 center, double radius): point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(center), radius(radius) {}
+Object::Object(Point3 center, double radius): type(Sphere), point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(center), radius(radius) {}
+
+/// Determines which hit function we should use depending on the object type
+/// - Parameters:
+///   - ray: The ray we cast from the origin point to our viewport
+///   - t_min: The minimum t value we should acknowledge as a hit
+///   - t_max: The maximum t value we should acknowledge as a hit
+bool Object::hit(const Ray& ray, double t_min, double t_max) {
+    switch (type) {
+        case Sphere:
+            return hit_sphere(ray, t_min, t_max);
+        case Empty:
+            return false;
+        default:
+            return false;
+    }
+    return false;
+}
 
 /// Calculates the hit equation of sphere given by (A + tb - C)(A + tb - C) = r^2
 /// by solving for t, less than 0 means no miss, exactly 0 means 1 hit, greater
 /// than zero means two solutions, returns the t value along our ray that we
 /// hit our sphere or -1.0 if we did not hit our sphere
+/// USED ONLY FOR SPHERES
 /// - Parameters:
 ///   - ray: The ray we cast from the origin point to our viewport
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool Sphere::hit(const Ray &ray, double t_min, double t_max) {
+bool Object::hit_sphere(const Ray& ray, double t_min, double t_max) {
     Vector3 oc = ray.origin - center;
     double a = ray.direction.length_squared();
     double half_b = dot(oc, ray.direction);
@@ -56,7 +74,7 @@ bool Sphere::hit(const Ray &ray, double t_min, double t_max) {
 /// This function assumes that t has been set which will always occur if the hit function
 /// returns true, assuming yes it will generate the point our ray hit our object at and also
 /// generate the surface normal
-void Sphere::calculate_hit() {
+void Object::calculate_hit() {
     point_of_hit = ray_of_hit.at(t);
     Vector3 outward_normal = (point_of_hit - center) / radius;
     set_surface_normal(ray_of_hit, outward_normal);
@@ -72,7 +90,7 @@ void Sphere::calculate_hit() {
 ///   at a point t) determined by the hit function
 ///   - outward_normal: The normal facing out of the object at the point of intersection
 ///   with our ray
-void Sphere::set_surface_normal(const Ray& ray, const Vector3& outward_normal) {
+void Object::set_surface_normal(const Ray& ray, const Vector3& outward_normal) {
     // Dot product less than 0 implies the ray and outward normal are goin
     // against each other AKA ray is outside object
     front_face = dot(ray.direction, outward_normal) < 0;
