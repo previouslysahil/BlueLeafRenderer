@@ -13,11 +13,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-struct Renderer;
-struct Renderer* Renderer_init(int width, int height, int samples_per_pixel);
-void Renderer_deinit(struct Renderer* obj);
-uint32_t* Renderer_render_buffer(struct Renderer* obj);
-
+    struct Renderer;
+    struct Renderer* Renderer_init(int width, int height, int samples_per_pixel, int max_bounces);
+    void Renderer_deinit(struct Renderer* obj);
+    uint32_t* Renderer_render_buffer(struct Renderer* obj, int curr_sample);
 #ifdef __cplusplus
 }
 #endif

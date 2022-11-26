@@ -7,14 +7,12 @@
 
 import SwiftUI
 
+fileprivate let width = 400
+fileprivate let height = 225
+
 struct ContentView: View {
     
-    @State var tapped = false
-    @State var image: CGImage?
-    
-    private let factory = ImageFactory()
-    private let width = 400
-    private let height = 225
+    @StateObject var renderer = Renderer(width: width, height: height, samples: 100, bounces: 8)
     
     var body: some View {
         ZStack {
@@ -36,7 +34,7 @@ struct ContentView: View {
             VStack {
                 Spacer()
                     .frame(height: 32)
-                if let image = image {
+                if let image = renderer.image {
                     Image(image, scale: 1, label: Text("image"))
                         .resizable()
                         .frame(width: CGFloat(width), height: CGFloat(height))
@@ -52,25 +50,8 @@ struct ContentView: View {
             .padding()
         }
         .edgesIgnoringSafeArea(.all)
-        .task {
-            // Still seems to be running on main thread
-            print("Started rendering")
-            let startRender = CFAbsoluteTimeGetCurrent()
-            let renderer = Renderer_init(Int32(width), Int32(height), Int32(100))
-            let renderBuffer = Renderer_render_buffer(renderer)
-            let diffRender = CFAbsoluteTimeGetCurrent() - startRender
-            print("Rendering took \(diffRender) seconds")
-            let startImageCreate = CFAbsoluteTimeGetCurrent()
-            let image = factory.create(using: renderBuffer!, width: width, height: height)
-            let diffImageCreate = CFAbsoluteTimeGetCurrent() - startImageCreate
-            print("Image create took \(diffImageCreate) seconds")
-            await MainActor.run {
-                withAnimation(.spring()) {
-                    self.image = image
-                }
-            }
-            // Deinitalize our renderer when we are done with it
-            Renderer_deinit(renderer)
+        .onAppear {
+            renderer.createImage()
         }
     }
 }

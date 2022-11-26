@@ -22,15 +22,14 @@ public:
     int width;
     int height;
     int samples_per_pixel;
+    int max_bounces;
     
 private:
-    int max_bounces;
-    int buffer_pos;
     World world;
     Camera camera;
 public:
-    Renderer(int width, int height, int samples_per_pixel);
-    uint32_t* render_buffer();
+    Renderer(int width, int height, int samples_per_pixel, int max_bounces);
+    uint32_t* render_buffer(int curr_sample);
 private:
     Color ray_color(const Ray& ray, World& world, int bounces) const;
 };

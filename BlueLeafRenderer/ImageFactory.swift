@@ -17,8 +17,6 @@ class ImageFactory {
         var context: CGContext!
         context = CGContext(data: renderBuffer, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: colorSpace, bitmapInfo: bitmapInfo, releaseCallback: nil, releaseInfo: nil)
         let cgImage = context.makeImage()
-        // Free our pointer to our buffer
-        renderBuffer.deallocate()
         return cgImage!
     }
 }
