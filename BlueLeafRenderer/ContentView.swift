@@ -38,11 +38,15 @@ struct ContentView: View {
                     Image(image, scale: 1, label: Text("image"))
                         .resizable()
                         .frame(width: CGFloat(width), height: CGFloat(height))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                 } else {
-                    Spacer()
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color(red: 0, green: 0, blue: 0))
                         .frame(width: CGFloat(width), height: CGFloat(height))
                 }
-                Text("Rendered image")
+                // Updating text every sample nearly doubles
+                // render time
+                Text("Sample: \(renderer.sampleCount)")
                     .font(.custom("Avenir Next", size: 16))
                     .fontWeight(.light)
                     .foregroundColor(Color(red: 0, green: 0, blue: 0))

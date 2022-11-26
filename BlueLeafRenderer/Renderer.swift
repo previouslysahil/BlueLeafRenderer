@@ -14,6 +14,7 @@ import Cocoa
 class Renderer: ObservableObject {
     
     @Published var image: CGImage?
+    @Published var sampleCount: Int
     
     private var cRenderer: OpaquePointer!
     
@@ -23,6 +24,8 @@ class Renderer: ObservableObject {
     private let factory = ImageFactory()
     
     init(width: Int, height: Int, samples: Int, bounces: Int) {
+        self.sampleCount = 0
+        
         cRenderer = Renderer_init(Int32(width), Int32(height), Int32(samples), Int32(bounces))
         self.samples = samples
         self.width = width
@@ -43,7 +46,7 @@ class Renderer: ObservableObject {
                 let diffRender = CFAbsoluteTimeGetCurrent() - startRender
                 print("Sample \(sample): Rendering took \(diffRender) seconds")
                 // Only make and publish our image every 2 samples for performance
-                if sample % 2 == 0 {
+                if sample % 1 == 0 {
                     let startImageCreate = CFAbsoluteTimeGetCurrent()
                     // We create our cgImage using the 32bit pixel data of our render
                     let image = factory.create(using: renderBuffer!, width: width, height: height)
@@ -55,6 +58,9 @@ class Renderer: ObservableObject {
                     await MainActor.run {
                         self.image = image
                     }
+                }
+                await MainActor.run {
+                    self.sampleCount = sample
                 }
             }
             let diff = CFAbsoluteTimeGetCurrent() - start

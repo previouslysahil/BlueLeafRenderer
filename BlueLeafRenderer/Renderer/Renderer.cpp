@@ -28,12 +28,21 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     scene(),
     camera(double(width), double(height))
 {
+    // Our materials
+    Material mat_ground = Material(Color(0.8, 0.8, 0), Lambertian);
+    Material mat_center = Material(Color(0.7, 0.3, 0.3), Lambertian);
+    Material mat_left = Material(Color(0.8, 0.8, 0.8), 0.3);
+    Material mat_right = Material(Color(0.8, 0.6, 0.2), 1.0);
     // Our objects
-    Object sphere(Point3(0, 0, -1), 0.5);
-    Object ground(Point3(0, -100.5, -1), 100);
+    Object ground(Point3(0, -100.5, -1), 100, mat_ground);
+    Object center(Point3(0, 0, -1), 0.5, mat_center);
+    Object left(Point3(-1, 0, -1), 0.5, mat_left);
+    Object right(Point3(1, 0, -1), 0.5, mat_right);
     // scene is default init'd so no need to init
-    scene.add(sphere);
     scene.add(ground);
+    scene.add(center);
+    scene.add(left);
+    scene.add(right);
 }
 
 /// Makes our color at the point of intersection of our ray
@@ -41,20 +50,29 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
 Color Renderer::ray_color(const Ray& ray, Scene& scene, int bounces) const {
     // Only recurse our ray bounces until we have reached our limit
     if (bounces <= 0) {
+        // If we reach our bounce limit the ray is basically absorbed
+        // so we return black!
         return Color(0, 0, 0);
     }
-    // Used to calculate our new ray
+    // Used to calculate our new ray and color
     Point3 point_of_hit;
     Vector3 surface_normal;
+    Material object_material;
     // Find an object to hit
-    if (scene.findNearestObject(ray, point_of_hit, surface_normal, 0.001, std::numeric_limits<double>::infinity())) {
-        // Find a target point that is on the surface of the unit sphere of
-        // our surface normal
-        Point3 target = point_of_hit + surface_normal + random_unit_vector();
-        // Cast a new ray from our inital hit point to this new target point
-        // in the unit sphere of our surface normal, we half our ray color each bounce
-        // to simulate light falloff
-        return ray_color(Ray(point_of_hit, target - point_of_hit), scene, bounces - 1) * 0.5;
+    if (scene.findNearestObject(ray, point_of_hit, surface_normal, object_material, 0.001, std::numeric_limits<double>::infinity())) {
+        // Properties to be populated by our material scattering function
+        // for proper ray casting and color
+        Ray scattered_ray;
+        Color attenuation;
+        // Now we attempt to scatter our ray using the object's material's
+        // scattering function
+        if (object_material.scatter(ray, point_of_hit, surface_normal, attenuation, scattered_ray)) {
+            // We use our attenuation (which is the color of our material) to color our ray
+            return attenuation * ray_color(scattered_ray, scene, bounces - 1);
+        }
+        // Unable to scatter this ray so return black because our ray
+        // is basically absorbed
+        return Color(0, 0, 0);
     }
     // Otherwise our ray color is the sky
     Vector3 unit_direction = unit_vector(ray.direction);

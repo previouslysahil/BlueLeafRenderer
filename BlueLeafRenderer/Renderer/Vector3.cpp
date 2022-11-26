@@ -29,3 +29,10 @@ double Vector3::length() const {
 double Vector3::length_squared() const {
     return x * x + y * y + z * z;
 }
+
+
+/// Checks if our vector is basically zero
+bool Vector3::near_zero() const {
+    const auto s = 1e-8;
+    return (fabs(x) < s) && (fabs(y) < s) && (fabs(z) < s);
+}

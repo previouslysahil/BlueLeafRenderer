@@ -8,7 +8,7 @@
 #include "Object.hpp"
 
 /// Initalizes all values to zeros or false
-Object::Object(): type(Empty), point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(), radius(0) {}
+Object::Object(): type(Empty), point_of_hit(), surface_normal(), object_material(), ray_of_hit(), t(0), front_face(false), center(), radius(0) {}
 
 /// Initalizes all values to zeros or false except for center and radius which
 /// define the circles location and sets the object type to sphere
@@ -16,7 +16,8 @@ Object::Object(): type(Empty), point_of_hit(), surface_normal(), ray_of_hit(), t
 /// - Parameters:
 ///   - center: The center of our circle
 ///   - radius: The radius of our circle
-Object::Object(Point3 center, double radius): type(Sphere), point_of_hit(), surface_normal(), ray_of_hit(), t(0), front_face(false), center(center), radius(radius) {}
+///   - object_material: The material of this sphere object
+Object::Object(Point3 center, double radius, Material& object_material): type(Sphere), point_of_hit(), surface_normal(), object_material(object_material), ray_of_hit(), t(0), front_face(false), center(center), radius(radius) {}
 
 /// Determines which hit function we should use depending on the object type
 /// - Parameters:
@@ -26,7 +27,7 @@ Object::Object(Point3 center, double radius): type(Sphere), point_of_hit(), surf
 bool Object::hit(const Ray& ray, double t_min, double t_max) {
     switch (type) {
         case Sphere:
-            return hit_sphere(ray, t_min, t_max);
+            return sphere_hit(ray, t_min, t_max);
         case Empty:
             return false;
         default:
@@ -44,7 +45,7 @@ bool Object::hit(const Ray& ray, double t_min, double t_max) {
 ///   - ray: The ray we cast from the origin point to our viewport
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool Object::hit_sphere(const Ray& ray, double t_min, double t_max) {
+bool Object::sphere_hit(const Ray& ray, double t_min, double t_max) {
     Vector3 oc = ray.origin - center;
     double a = ray.direction.length_squared();
     double half_b = dot(oc, ray.direction);
@@ -71,10 +72,26 @@ bool Object::hit_sphere(const Ray& ray, double t_min, double t_max) {
     return true;
 }
 
+
+/// Determines which calculate hit function we should use depending on the object type
+void Object::calculate_hit() {
+    switch (type) {
+        case Sphere:
+            sphere_calculate_hit();
+            return;
+        case Empty:
+            return;
+        default:
+            return;
+    }
+    return;
+}
+
 /// This function assumes that t has been set which will always occur if the hit function
 /// returns true, assuming yes it will generate the point our ray hit our object at and also
 /// generate the surface normal
-void Object::calculate_hit() {
+/// USED ONLY FOR SPHERES
+void Object::sphere_calculate_hit() {
     point_of_hit = ray_of_hit.at(t);
     Vector3 outward_normal = (point_of_hit - center) / radius;
     set_surface_normal(ray_of_hit, outward_normal);

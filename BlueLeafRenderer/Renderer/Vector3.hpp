@@ -19,6 +19,7 @@ public:
     
     double length() const;
     double length_squared() const;
+    bool near_zero() const;
 };
 
 /// The mathematical application and interchangeability of points

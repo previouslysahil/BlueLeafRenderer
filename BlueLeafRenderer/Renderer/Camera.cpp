@@ -7,6 +7,11 @@
 
 #include "Camera.hpp"
 
+/// Creates a camera object and generates a viewport using the
+/// dimensions of the image we provide
+/// - Parameters:
+///   - image_width: The width of our image
+///   - image_height: The height of our image
 Camera::Camera(double image_width, double image_height) {
     double aspect_ratio = image_width / image_height;
     double viewport_height = 2;
@@ -20,6 +25,11 @@ Camera::Camera(double image_width, double image_height) {
     lower_left_corner = origin - horizontal / 2 - vertical / 2 - Vector3(0, 0, focal_length);
 }
 
+/// Casts a ray from the origin of our camera onto the viewport plane we
+/// construct in the camera object
+/// - Parameters:
+///   - u: The horizontal point we are looking at on our viewport
+///   - v: The vertical point we are looking at on our viewport
 Ray Camera::create_ray(double u, double v) const {
     // Cast our ray from our origin to a point on our view
     return Ray(origin, lower_left_corner + horizontal * u + vertical * v - origin);

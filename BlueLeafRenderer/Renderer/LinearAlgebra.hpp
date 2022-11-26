@@ -34,6 +34,10 @@ inline Vector3 operator /(const Vector3& v, const double t) {
     return Vector3(v.x / t, v.y / t, v.z / t);
 }
 
+inline double dot(const Vector3& v1, const Vector3& v2) {
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
 inline Vector3 unit_vector(const Vector3& v) {
     return v / v.length();
 }
@@ -54,8 +58,8 @@ inline Vector3 random_unit_vector() {
     return unit_vector(random_in_unit_sphere());
 }
 
-inline double dot(const Vector3& v1, const Vector3& v2) {
-    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+inline Vector3 reflect(const Vector3& v, const Vector3& n) {
+    return v - n * 2 * dot(v, n);
 }
 
 inline Color operator +(const Color& c1, const Color& c2) {
@@ -68,6 +72,10 @@ inline Color operator +(const Color& c, const Vector3& v) {
 
 inline Color operator *(const Color& c, const double t) {
     return Color(c.r * t, c.g * t, c.b * t);
+}
+
+inline Color operator *(const Color& c1, const Color& c2) {
+    return Color(c1.r * c2.r, c1.g * c2.g, c1.b * c2.b);
 }
 
 inline Color operator /(const Color& c, const double t) {

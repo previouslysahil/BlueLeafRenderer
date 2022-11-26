@@ -10,6 +10,7 @@
 
 #include "Ray.hpp"
 #include "Vector3.hpp"
+#include "Material.hpp"
 
 enum ObjectType {
     Empty,
@@ -23,6 +24,7 @@ public:
     Point3 point_of_hit;
     Vector3 surface_normal;
     Ray ray_of_hit;
+    Material object_material;
     double t;
     bool front_face;
 private:
@@ -33,14 +35,15 @@ private:
 public:
     Object();
     // Used only for spheres
-    Object(Point3 center, double radius);
+    Object(Point3 center, double radius, Material& object_material);
     
     bool hit(const Ray& ray, double t_min, double t_max);
     void calculate_hit();
 private:
     void set_surface_normal(const Ray& ray, const Vector3& outward_normal);
     // Used only for sphere
-    bool hit_sphere(const Ray& ray, double t_min, double t_max);
+    bool sphere_hit(const Ray& ray, double t_min, double t_max);
+    void sphere_calculate_hit();
 };
 
 #endif /* Object_hpp */

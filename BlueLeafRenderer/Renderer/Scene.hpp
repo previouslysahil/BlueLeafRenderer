@@ -9,6 +9,7 @@
 #define Scene_hpp
 
 #include "Object.hpp"
+#include "Material.hpp"
 
 #include <vector>
 
@@ -22,7 +23,7 @@ public:
     void add(Object& object);
     void clear();
     
-    bool findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, double t_min, double t_max);
+    bool findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, Material& object_material, double t_min, double t_max);
 };
 
 #endif /* Scene_hpp */
