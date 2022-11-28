@@ -11,23 +11,13 @@
 /// Initalizes all values to default
 Material::Material(): albedo(), type(None), roughness(0), index_of_refraction(0) {}
 
-/// Initalizes albedo and type, sets roughness to zero by default
-/// - Parameters:
-///   - albedo: The color of the material
-///   - type: The type of the material
-Material::Material(Color albedo, MaterialType type): albedo(albedo), type(type), roughness(0), index_of_refraction(0) {}
-
-/// Initalizes albedo and type and roughness which is capped at 1
-/// USED ONLY FOR METAL
+/// Initalizes albedo, type, roughness which is capped at 1, and index of refraction
 /// - Parameters:
 ///   - albedo: The color of the metal
 ///   - roughness: The roughness of our metal
-Material::Material(Color albedo, double roughness): albedo(albedo), type(Metal), roughness(roughness < 1 ? roughness : 1), index_of_refraction(0) {}
-
-/// Initalizes type to dielectric, others to empty
-/// USED ONLY FOR DIELECTRIC
-/// - Parameter index_of_refraction: The ior of our dielectirc used to make refraction ray
-Material::Material(double index_of_refraction): albedo(), type(Dielectric), roughness(0), index_of_refraction(index_of_refraction) {}
+///   - index_of_refraction: The ior of our dielectirc used to make refraction ray
+///   - type: The type of the material
+Material::Material(Color albedo, double roughness, double index_of_refraction, MaterialType type): albedo(albedo), type(type), roughness(roughness < 1 ? roughness : 1), index_of_refraction(index_of_refraction) {}
 
 /// Determines which scattering function to use based on the material type we have
 /// Returns true if we can properly scatter this material else false
@@ -116,6 +106,7 @@ bool Material::metal_scatter(const Ray& ray, const Point3& point_of_hit, const V
 /// Scatters by reflecting a ray if there is no solution to snells law and refracting
 /// it if there is a solution to snells law, a solution to snells law will not exist
 /// when the refracted index of the material is higher than the outside element
+/// also uses schlicks approximation to reflect if viewing at a steep angle
 /// - Parameters:
 ///   - ray: The incoming ray that we will use to create our new scattered ray
 ///   - point_of_hit: The point our incoming ray hit our material's object at
@@ -125,8 +116,6 @@ bool Material::metal_scatter(const Ray& ray, const Point3& point_of_hit, const V
 ///   at this point
 ///   - scattered_ray: The new ray that we will create of the above params
 bool Material::dielectric_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
-    // Our color attenuation will always be clear
-    attenuation = Color(1, 1, 1);
     // Invert refractio ratio if normal direction is inward
     double refraction_ratio = front_face ? (1.0 / index_of_refraction) : index_of_refraction;
     
@@ -137,15 +126,20 @@ bool Material::dielectric_scatter(const Ray& ray, const Point3& point_of_hit, co
     
     bool cannot_refract = refraction_ratio * sin_theta > 1.0;
     Vector3 direction;
-    
+    // We decide if we refract based on whether or not we can solve snells law
+    // and we also use schlicks approximation which determines when to reflect
+    // based on the angle of our ray hitting our object (water more mirror like
+    // like at steep angle)
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_double()) {
         direction = reflect(unit_direction, surface_normal);
     } else {
         direction = refract(unit_direction, surface_normal, refraction_ratio);
     }
-    
-    // Cast our ray
+    // Cast our ray using the reflect or refract based on our
+    // refraction decision
     scattered_ray = Ray(point_of_hit, direction);
+    // Pass the color of the material back for proper coloring
+    attenuation = albedo;
     // Always scatters
     return true;
 }

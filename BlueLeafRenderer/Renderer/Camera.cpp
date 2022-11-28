@@ -7,8 +7,6 @@
 
 #include "Camera.hpp"
 
-#include <iostream>
-
 /// Creates a camera object and generates a viewport using the
 /// dimensions of the image we provide
 /// - Parameters:

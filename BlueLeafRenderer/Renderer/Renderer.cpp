@@ -11,7 +11,6 @@
 
 #include <cmath>
 #include <limits>
-#include <iostream>
 
 /// This method will set up our renderer along side generating our scene, camera and the bounces
 /// and max samples of our image
@@ -29,10 +28,10 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     camera(double(width), double(height), Point3(3, 1.5, 3.5), Point3(0, 0, -1), Vector3(0, 1, 0), 20, 0.1)
 {
     // Our materials
-    Material mat_ground = Material(Color(0.3, 0.2, 0.8), Lambertian);
-    Material mat_center = Material(Color(0.3, 0.08, 0.343), Lambertian);
-    Material mat_left = Material(1.5);
-    Material mat_right = Material(Color(0.9, 0.6, 0.5), 0.1);
+    Material mat_ground = Material(Color(0.3, 0.2, 0.8), 0, 0, Lambertian);
+    Material mat_center = Material(Color(0.3, 0.08, 0.343), 0, 0, Lambertian);
+    Material mat_left = Material(Color(0.95, 0.97, 1), 0, 1.5, Dielectric);
+    Material mat_right = Material(Color(0.9, 0.6, 0.5), 0.1, 0, Metal);
     // Our objects
     Object ground(Point3(0, -100.5, -1), 100, mat_ground);
     Object center(Point3(0, 0, -1), 0.5, mat_center);
@@ -93,6 +92,10 @@ uint32_t* Renderer::render_buffer(int curr_sample) {
     uint32_t* buffer = new uint32_t[width * height];
     // Set up our buffer position
     int buffer_pos = 0;
+    // curr_pixel_color invariant
+    double curr_pixel_color_invariant = (1.0 / double(curr_sample));
+    // prev_pixel_color invariant
+    double prev_pixel_color_invariant = (double(curr_sample - 1.0) / double(curr_sample));
     // Generate image top down, left right so buffer stores pixel values
     // in their proper spot
     for (int j = height - 1; j >= 0; j--) {
@@ -106,9 +109,9 @@ uint32_t* Renderer::render_buffer(int curr_sample) {
             Ray ray = camera.create_ray(u, v);
             // Make our color for this pixel by creating a rolling average using the previous pixel color
             // that contains the previously averaged pixels
-            Color curr_pixel_color = ray_color(ray, scene, max_bounces) * (1.0 / double(curr_sample));
+            Color curr_pixel_color = ray_color(ray, scene, max_bounces) * curr_pixel_color_invariant;
             // The bias favoring our previous pixels should be much higher than the current pixel
-            Color prev_pixel_color = pixel_colors[buffer_pos] * (double(curr_sample - 1.0) / double(curr_sample));
+            Color prev_pixel_color = pixel_colors[buffer_pos] * prev_pixel_color_invariant;
             // Add together to get final result
             pixel_colors[buffer_pos] = prev_pixel_color + curr_pixel_color;
             // Gamma correct before we send this pixel color to our buffer

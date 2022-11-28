@@ -30,11 +30,7 @@ private:
     double index_of_refraction;
 public:
     Material();
-    Material(Color albedo, MaterialType type);
-    // Used only for metal
-    Material(Color albedo, double roughness);
-    // Used only for dielectric
-    Material(double index_of_refraction);
+    Material(Color albedo, double roughness, double index_of_refraction, MaterialType type);
     
     bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray);
 private:
