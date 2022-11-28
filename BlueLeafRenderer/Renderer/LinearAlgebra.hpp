@@ -58,6 +58,14 @@ inline Vector3 random_in_unit_sphere() {
     }
 }
 
+inline Vector3 random_in_unit_disk() {
+    while (true) {
+        Vector3 p = Vector3(random_double(-1, 1), random_double(-1, 1), 0.0);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
+
 inline Vector3 random_unit_vector() {
     return unit_vector(random_in_unit_sphere());
 }

@@ -26,18 +26,18 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     samples_per_pixel(samples_per_pixel),
     max_bounces(max_bounces),
     scene(),
-    camera(double(width), double(height), Point3(-2, 2, 1), Point3(0, 0, -1), Vector3(0, 1, 0), 90)
+    camera(double(width), double(height), Point3(3, 1.5, 3.5), Point3(0, 0, -1), Vector3(0, 1, 0), 20, 0.1)
 {
     // Our materials
-    Material mat_ground = Material(Color(0.8, 0.8, 0), Lambertian);
-    Material mat_center = Material(Color(0.1, 0.2, 0.5), Lambertian);
+    Material mat_ground = Material(Color(0.3, 0.2, 0.8), Lambertian);
+    Material mat_center = Material(Color(0.3, 0.08, 0.343), Lambertian);
     Material mat_left = Material(1.5);
-    Material mat_right = Material(Color(0.8, 0.6, 0.2), 0);
+    Material mat_right = Material(Color(0.9, 0.6, 0.5), 0.1);
     // Our objects
     Object ground(Point3(0, -100.5, -1), 100, mat_ground);
     Object center(Point3(0, 0, -1), 0.5, mat_center);
     Object left(Point3(-1, 0, -1), 0.5, mat_left);
-    Object left_in(Point3(-1, 0, -1), -0.4, mat_left);
+    Object left_in(Point3(-1, 0, -1), -0.45, mat_left);
     Object right(Point3(1, 0, -1), 0.5, mat_right);
     // scene is default init'd so no need to init
     scene.add(ground);
