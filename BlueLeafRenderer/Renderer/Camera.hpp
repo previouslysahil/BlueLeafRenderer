@@ -19,8 +19,8 @@ private:
     Vector3 vertical;
     
 public:
-    Camera(double image_width, double image_height);
-    Ray create_ray(double u, double v) const;
+    Camera(double image_width, double image_height, Point3 lookfrom, Point3 lookat, Vector3 vup, double vfov);
+    Ray create_ray(double h, double v) const;
 };
 
 #endif /* Camera_hpp */
