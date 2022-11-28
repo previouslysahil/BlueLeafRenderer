@@ -51,6 +51,7 @@ class Renderer: ObservableObject {
                     // We create our cgImage using the 32bit pixel data of our render
                     let image = factory.create(using: renderBuffer!, width: width, height: height)
                     // Free our pointer to our buffer we are done with it
+                    // since we init'd on the heap in Renderer.cpp
                     renderBuffer!.deallocate()
                     let diffImageCreate = CFAbsoluteTimeGetCurrent() - startImageCreate
                     print("Sample \(sample): Image create took \(diffImageCreate) seconds")
@@ -65,10 +66,14 @@ class Renderer: ObservableObject {
             }
             let diff = CFAbsoluteTimeGetCurrent() - start
             print("Total render took \(diff) seconds")
+            // Somehting about maybe using a CAMetalLayer instead of SwiftUI.Image?
+            print("Alert! Publishing image and sample count frequently drastically increase render time")
         }
     }
     
     deinit {
+        // Make sure we clean up our rendering class since it's
+        // init'd on the heap
         Renderer_deinit(cRenderer)
     }
 }

@@ -12,7 +12,7 @@ fileprivate let height = 225
 
 struct ContentView: View {
     
-    @StateObject var renderer = Renderer(width: width, height: height, samples: 100, bounces: 8)
+    @StateObject var renderer = Renderer(width: width, height: height, samples: 100, bounces: 50)
     
     var body: some View {
         ZStack {

@@ -9,20 +9,25 @@
 #include "LinearAlgebra.hpp"
 
 /// Initalizes all values to default
-Material::Material(): albedo(), type(None), roughness(0) {}
+Material::Material(): albedo(), type(None), roughness(0), index_of_refraction(0) {}
 
 /// Initalizes albedo and type, sets roughness to zero by default
 /// - Parameters:
 ///   - albedo: The color of the material
 ///   - type: The type of the material
-Material::Material(Color albedo, MaterialType type): albedo(albedo), type(type), roughness(0) {}
+Material::Material(Color albedo, MaterialType type): albedo(albedo), type(type), roughness(0), index_of_refraction(0) {}
 
 /// Initalizes albedo and type and roughness which is capped at 1
 /// USED ONLY FOR METAL
 /// - Parameters:
 ///   - albedo: The color of the metal
 ///   - roughness: The roughness of our metal
-Material::Material(Color albedo, double roughness): albedo(albedo), type(Metal), roughness(roughness < 1 ? roughness : 1) {}
+Material::Material(Color albedo, double roughness): albedo(albedo), type(Metal), roughness(roughness < 1 ? roughness : 1), index_of_refraction(0) {}
+
+/// Initalizes type to dielectric, others to empty
+/// USED ONLY FOR DIELECTRIC
+/// - Parameter index_of_refraction: The ior of our dielectirc used to make refraction ray
+Material::Material(double index_of_refraction): albedo(), type(Dielectric), roughness(0), index_of_refraction(index_of_refraction) {}
 
 /// Determines which scattering function to use based on the material type we have
 /// Returns true if we can properly scatter this material else false
@@ -30,10 +35,11 @@ Material::Material(Color albedo, double roughness): albedo(albedo), type(Metal),
 ///   - ray: The incoming ray that we will use to create our new scattered ray
 ///   - point_of_hit: The point our incoming ray hit our material's object at
 ///   - surface_normal: The surface normal of the point of hit
+///   - front_face: The direction of our surface normal (in/ out)
 ///   - attenuation: The color that we will assign based on the materials color
 ///   at this point
 ///   - scattered_ray: The new ray that we will create of the above params
-bool Material::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, Color& attenuation, Ray& scattered_ray) {
+bool Material::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
     switch (type) {
         case Lambertian:
             // Lambertian scattering scatters our scattered ray in a random direction in
@@ -43,6 +49,10 @@ bool Material::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3
             // Metal scattering scatters our scattered ray by reflecting it across the
             // surface normal
             return metal_scatter(ray, point_of_hit, surface_normal, attenuation, scattered_ray);
+        case Dielectric:
+            // Dielectric scattering scatters either a refracted or reflected ray depending
+            // on whether snells law can be solved or not
+            return dielectric_scatter(ray, point_of_hit, surface_normal, front_face, attenuation, scattered_ray);
         case None:
             return false;
         default:
@@ -101,4 +111,41 @@ bool Material::metal_scatter(const Ray& ray, const Point3& point_of_hit, const V
     // We only scatter our ray if the direction of our scattering
     // is similar to the direction of our surface normal
     return (dot(scattered_ray.direction, surface_normal) > 0);
+}
+
+/// Scatters by reflecting a ray if there is no solution to snells law and refracting
+/// it if there is a solution to snells law, a solution to snells law will not exist
+/// when the refracted index of the material is higher than the outside element
+/// - Parameters:
+///   - ray: The incoming ray that we will use to create our new scattered ray
+///   - point_of_hit: The point our incoming ray hit our material's object at
+///   - surface_normal: The surface normal of the point of hit
+///   - front_face: The direction of our surface normal (in/ out)
+///   - attenuation: The color that we will assign based on the materials color
+///   at this point
+///   - scattered_ray: The new ray that we will create of the above params
+bool Material::dielectric_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
+    // Our color attenuation will always be clear
+    attenuation = Color(1, 1, 1);
+    // Invert refractio ratio if normal direction is inward
+    double refraction_ratio = front_face ? (1.0 / index_of_refraction) : index_of_refraction;
+    
+    // Calculate our refracted ray
+    Vector3 unit_direction = unit_vector(ray.direction);
+    double cos_theta = fmin(dot(-unit_direction, surface_normal), 1.0);
+    double sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+    
+    bool cannot_refract = refraction_ratio * sin_theta > 1.0;
+    Vector3 direction;
+    
+    if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_double()) {
+        direction = reflect(unit_direction, surface_normal);
+    } else {
+        direction = refract(unit_direction, surface_normal, refraction_ratio);
+    }
+    
+    // Cast our ray
+    scattered_ray = Ray(point_of_hit, direction);
+    // Always scatters
+    return true;
 }

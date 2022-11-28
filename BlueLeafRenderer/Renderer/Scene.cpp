@@ -30,10 +30,11 @@ void Scene::clear() {
 ///   - ray: The ray coming from the origin to our viewport
 ///   - point_of_hit: The point our ray hit our nearest object at
 ///   - surface_normal: The normal at the point our ray hit our object
+///   - front_face: The direction of our surface normal (in or out)
 ///   - object_material: The material of the object we hit
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool Scene::findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, Material& object_material, double t_min, double t_max) {
+bool Scene::findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, bool& front_face, Material& object_material, double t_min, double t_max) {
     // No object found yet
     bool found_object = false;
     int found_idx = -1;
@@ -60,9 +61,11 @@ bool Scene::findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& sur
         foundObject.calculate_hit();
         // Pass back the point our object was hit at
         // the normal of the object at that point and
-        // the material of the object
+        // the material of the object and the direction
+        // of our surface normal
         point_of_hit = foundObject.point_of_hit;
         surface_normal = foundObject.surface_normal;
+        front_face = foundObject.front_face;
         object_material = foundObject.object_material;
     }
     return found_object;

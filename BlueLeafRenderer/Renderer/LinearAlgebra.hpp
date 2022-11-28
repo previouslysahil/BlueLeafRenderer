@@ -62,6 +62,13 @@ inline Vector3 reflect(const Vector3& v, const Vector3& n) {
     return v - n * 2 * dot(v, n);
 }
 
+inline Vector3 refract(const Vector3& uv, const Vector3& n, double etai_over_etat) {
+    double cos_theta = fmin(dot(-uv, n), 1.0);
+    Vector3 r_out_perp = (uv + n * cos_theta) * etai_over_etat;
+    Vector3 r_out_parallel = n * -sqrt(fabs(1.0 - r_out_perp.length_squared()));
+    return r_out_perp + r_out_parallel;
+}
+
 inline Color operator +(const Color& c1, const Color& c2) {
     return Color(c1.r + c2.r, c1.g + c2.g, c1.b + c2.b);
 }
@@ -84,6 +91,13 @@ inline Color operator /(const Color& c, const double t) {
 
 inline Color sqrt_color(const Color& c) {
     return Color(std::sqrt(c.r), std::sqrt(c.g), std::sqrt(c.b));
+}
+
+inline double reflectance(double cosine, double ref_idx) {
+    // Schlicks approx for reflectance
+    double r0 = (1 - ref_idx) / (1 + ref_idx);
+    r0 = r0 * r0;
+    return r0 + (1 - r0) * pow(1 - cosine, 5);
 }
 
 #endif /* LinearAlgebra_hpp */
