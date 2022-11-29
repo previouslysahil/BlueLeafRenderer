@@ -7,12 +7,7 @@
 
 import SwiftUI
 
-fileprivate let width = 400
-fileprivate let height = 225
-
 struct ContentView: View {
-    
-    @StateObject var renderer = Renderer(width: width, height: height, samples: 100, bounces: 50)
     
     var body: some View {
         ZStack {
@@ -22,7 +17,7 @@ struct ContentView: View {
                     HStack {
                         ForEach(0..<35) { _ in
                             Circle()
-                                .fill(Color(red: 0.894, green: 0.912, blue: 0.958))
+                                .fill(Color(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), opacity: .random(in: 0...0.4)))
                                 .frame(width: 3, height: 3)
                         }
                     }
@@ -31,32 +26,11 @@ struct ContentView: View {
             .padding(.top, 32)
             .padding(.bottom, 4)
             .padding(.horizontal)
-            VStack {
-                Spacer()
-                    .frame(height: 32)
-                if let image = renderer.image {
-                    Image(image, scale: 1, label: Text("image"))
-                        .resizable()
-                        .frame(width: CGFloat(width), height: CGFloat(height))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                } else {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color(red: 0, green: 0, blue: 0))
-                        .frame(width: CGFloat(width), height: CGFloat(height))
-                }
-                // Updating text every sample nearly doubles
-                // render time
-                Text("Sample: \(renderer.sampleCount)")
-                    .font(.custom("Avenir Next", size: 16))
-                    .fontWeight(.light)
-                    .foregroundColor(Color(red: 0, green: 0, blue: 0))
-            }
-            .padding()
+            .drawingGroup() // slightly helps in performance
+            // Abstract renderer view so SwiftUI only redraws this view hierarchy when updating sample count and image
+            RendererView()
         }
         .edgesIgnoringSafeArea(.all)
-        .onAppear {
-            renderer.createImage()
-        }
     }
 }
 

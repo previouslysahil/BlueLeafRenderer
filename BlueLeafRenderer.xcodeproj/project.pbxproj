@@ -22,6 +22,7 @@
 		64B144F12931976800265549 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64B144F02931976800265549 /* Renderer.swift */; };
 		64BD3527293299A3004FC9ED /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD3525293299A3004FC9ED /* Object.cpp */; };
 		64BD352A2932A366004FC9ED /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD35282932A366004FC9ED /* Material.cpp */; };
+		64BD352C29355839004FC9ED /* RendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BD352B29355839004FC9ED /* RendererView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		64BD3526293299A3004FC9ED /* Object.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Object.hpp; sourceTree = "<group>"; };
 		64BD35282932A366004FC9ED /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
 		64BD35292932A366004FC9ED /* Material.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Material.hpp; sourceTree = "<group>"; };
+		64BD352B29355839004FC9ED /* RendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				6480A44A292F09F000C6F19C /* BlueLeafRendererApp.swift */,
 				6480A45B292F1A8E00C6F19C /* ImageFactory.swift */,
 				64B144F02931976800265549 /* Renderer.swift */,
+				64BD352B29355839004FC9ED /* RendererView.swift */,
 				6480A44C292F09F000C6F19C /* ContentView.swift */,
 				6480A44E292F09F200C6F19C /* Assets.xcassets */,
 				6480A453292F09F200C6F19C /* BlueLeafRenderer.entitlements */,
@@ -206,6 +209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				64907CD2292FFF9F00A1C486 /* Ray.cpp in Sources */,
+				64BD352C29355839004FC9ED /* RendererView.swift in Sources */,
 				64BD352A2932A366004FC9ED /* Material.cpp in Sources */,
 				6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */,
 				64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */,

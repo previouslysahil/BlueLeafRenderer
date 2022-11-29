@@ -32,6 +32,7 @@ public:
     uint32_t* render_buffer(int curr_sample);
 private:
     Color ray_color(const Ray& ray, Scene& scene, int bounces) const;
+    Color ray_color_seq(const Ray& ray, Scene& scene, int bounces) const;
 };
 
 #endif /* Renderer_hpp */
