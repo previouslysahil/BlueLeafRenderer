@@ -25,7 +25,7 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     samples_per_pixel(samples_per_pixel),
     max_bounces(max_bounces),
     scene(),
-    camera(double(width), double(height), Point3(3, 1.5, 3.5), Point3(0.12, -0.05, -1), Vector3(0, 1, 0), 20, 0.1)
+    camera(double(width), double(height), Point3(3, 1.5, 3.5), Point3(0.12, -0.05, -1), Vector3(0, 1, 0), 20, 0.1, 0.0, 1.0)
 {
     // Our materials
     Material mat_ground(Color(0.3, 0.2, 0.8), 0, 0, Lambertian);

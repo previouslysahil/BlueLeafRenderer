@@ -8,16 +8,28 @@
 #include "Object.hpp"
 
 /// Initalizes all values to zeros or false
-Object::Object(): type(Empty), point_of_hit(), surface_normal(), object_material(), ray_of_hit(), t(0), front_face(false), center(), radius(0) {}
+Object::Object(): type(Empty), point_of_hit(), surface_normal(), object_material(), ray_of_hit(), t(0), front_face(false), center_start(), center_end(), time_start(), time_end(), radius(0) {}
 
 /// Initalizes all values to zeros or false except for center and radius which
 /// define the circles location and sets the object type to sphere
 /// USED ONLY FOR SPHERES
 /// - Parameters:
-///   - center: The center of our circle
+///   - center_start: The center of our circle
 ///   - radius: The radius of our circle
 ///   - object_material: The material of this sphere object
-Object::Object(Point3 center, double radius, Material& object_material): type(Sphere), point_of_hit(), surface_normal(), object_material(object_material), ray_of_hit(), t(0), front_face(false), center(center), radius(radius) {}
+Object::Object(Point3 center_start, double radius, Material& object_material): type(Sphere), point_of_hit(), surface_normal(), object_material(object_material), ray_of_hit(), t(0), front_face(false), center_start(center_start), center_end(center_start), time_start(), time_end(), radius(radius) {}
+
+/// Initalizes all values to zeros or false except for center and radius which
+/// define the circles location and sets the object type to sphere
+/// USED ONLY FOR SPHERES (MOVING)
+/// - Parameters:
+///   - center_start: The beginning center of our moving circle
+///   - center_end: The ending center of our moving circle
+///   - time_start: The time where our sphere is at center start
+///   - time_end: The time where our sphere is at center end
+///   - radius: The radius of our circle
+///   - object_material: The material of this sphere object
+Object::Object(Point3 center_start, Point3 center_end, double time_start, double time_end, double radius, Material& object_material): type(Sphere), point_of_hit(), surface_normal(), object_material(object_material), ray_of_hit(), t(0), front_face(false), center_start(center_start), center_end(center_end), time_start(time_start), time_end(time_end), radius(radius) {}
 
 /// Determines which hit function we should use depending on the object type
 /// - Parameters:
@@ -46,7 +58,7 @@ bool Object::hit(const Ray& ray, double t_min, double t_max) {
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
 bool Object::sphere_hit(const Ray& ray, double t_min, double t_max) {
-    Vector3 oc = ray.origin - center;
+    Vector3 oc = ray.origin - center(ray.time);
     double a = ray.direction.length_squared();
     double half_b = dot(oc, ray.direction);
     double c = oc.length_squared() - radius * radius;
@@ -93,7 +105,7 @@ void Object::calculate_hit() {
 /// USED ONLY FOR SPHERES
 void Object::sphere_calculate_hit() {
     point_of_hit = ray_of_hit.at(t);
-    Vector3 outward_normal = (point_of_hit - center) / radius;
+    Vector3 outward_normal = (point_of_hit - center(ray_of_hit.time)) / radius;
     set_surface_normal(ray_of_hit, outward_normal);
 }
 
@@ -114,4 +126,19 @@ void Object::set_surface_normal(const Ray& ray, const Vector3& outward_normal) {
     // Based on the direction of our ray to our object/ if we are inside
     // or outside our object we change the surface normal
     surface_normal = front_face ? outward_normal : -outward_normal;
+}
+
+/// Calculates our center location given the time value provided
+/// by the time param using our time start and time end as
+/// our range, to mitigate calculations we first check if the time
+/// start and time end are the same to see if we have a moving
+/// object
+/// - Parameter time: The time provided should be in range
+Point3 Object::center(double time) const {
+    // Only give a 'moving' center if we have a
+    // time range
+    if (fabs(time_start - time_end) < __DBL_EPSILON__) {
+        return center_start;
+    }
+    return center_start + (center_end - center_start) * ((time - time_start) / (time_end - time_start));
 }

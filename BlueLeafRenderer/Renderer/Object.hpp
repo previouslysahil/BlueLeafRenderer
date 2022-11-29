@@ -30,12 +30,16 @@ public:
 private:
     // Attributes specific to spheres (other object)
     // specific attributes will also go here
-    Point3 center;
+    Point3 center_start;
+    Point3 center_end;
+    double time_start;
+    double time_end;
     double radius;
 public:
     Object();
     // Used only for spheres
-    Object(Point3 center, double radius, Material& object_material);
+    Object(Point3 center_start, double radius, Material& object_material);
+    Object(Point3 center_start, Point3 center_end, double time_start, double time_end, double radius, Material& object_material);
     
     bool hit(const Ray& ray, double t_min, double t_max);
     void calculate_hit();
@@ -44,6 +48,7 @@ private:
     // Used only for sphere
     bool sphere_hit(const Ray& ray, double t_min, double t_max);
     void sphere_calculate_hit();
+    Point3 center(double time) const;
 };
 
 #endif /* Object_hpp */

@@ -17,7 +17,9 @@
 ///   - global_y: Vector orienting our local x and y axis of our camera
 ///   - vfov: Our vertical field of view
 ///   - aperture: Decides how much blur should be in our scene
-Camera::Camera(double image_width, double image_height, Point3 lookfrom, Point3 lookat, Vector3 global_y, double vfov, double aperture) {
+///   - time_start: Time of shutter opening
+///   - time_end: Time of shutter closing
+Camera::Camera(double image_width, double image_height, Point3 lookfrom, Point3 lookat, Vector3 global_y, double vfov, double aperture, double time_start, double time_end) {
     // Make our aspect ratio for view port width calculation
     double aspect_ratio = image_width / image_height;
     // Convert our vfov to radians for viewport height calculation
@@ -43,6 +45,9 @@ Camera::Camera(double image_width, double image_height, Point3 lookfrom, Point3 
     lower_left_corner = origin - horizontal / 2 - vertical / 2 - local_z * focus_dist;
     // Setup our lens radius
     lens_radius = aperture / 2.0;
+    // Save time
+    this->time_start = time_start;
+    this->time_end = time_end;
 }
 
 /// Casts a ray from the origin of our camera onto the viewport plane we
@@ -61,5 +66,5 @@ Ray Camera::create_ray(double h, double v) const {
     Vector3 offset = local_x * rand.x + local_y * rand.y;
     // Cast our ray from our origin to a point on our view
     // use our random offset for focus blur
-    return Ray(origin + offset, lower_left_corner + horizontal * h + vertical * v - origin - offset);
+    return Ray(origin + offset, lower_left_corner + horizontal * h + vertical * v - origin - offset, random_double(time_start, time_end));
 }

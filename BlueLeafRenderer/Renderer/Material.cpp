@@ -34,7 +34,7 @@ bool Material::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3
         case Lambertian:
             // Lambertian scattering scatters our scattered ray in a random direction in
             // the unit sphere of our surface normal
-            return lambertian_scatter(point_of_hit, surface_normal, attenuation, scattered_ray);
+            return lambertian_scatter(ray, point_of_hit, surface_normal, attenuation, scattered_ray);
         case Metal:
             // Metal scattering scatters our scattered ray by reflecting it across the
             // surface normal
@@ -60,7 +60,7 @@ bool Material::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3
 ///   - attenuation: The color that we will assign based on the materials color
 ///   at this point
 ///   - scattered_ray: The new ray that we will create of the above params
-bool Material::lambertian_scatter(const Point3& point_of_hit, const Vector3& surface_normal, Color& attenuation, Ray& scattered_ray) {
+bool Material::lambertian_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, Color& attenuation, Ray& scattered_ray) {
     // This get the vector S that is cast from our point of hit's
     // surface normal to a point on the unit sphere of point of
     // hit + surface normal
@@ -70,7 +70,7 @@ bool Material::lambertian_scatter(const Point3& point_of_hit, const Vector3& sur
         scatter_direction = surface_normal;
     }
     // Now we cast our ray in this new direction
-    scattered_ray = Ray(point_of_hit, scatter_direction);
+    scattered_ray = Ray(point_of_hit, scatter_direction, ray.time);
     // Pass the color of the material back for proper coloring
     attenuation = albedo;
     // Lambertian always scatters
@@ -95,7 +95,7 @@ bool Material::metal_scatter(const Ray& ray, const Point3& point_of_hit, const V
     // Now we cast our ray in this new direction, we distort the
     // true reflection if we want some roughness using a random
     // in our unit sphere of the reflected ray
-    scattered_ray = Ray(point_of_hit, reflected + random_in_unit_sphere() * roughness);
+    scattered_ray = Ray(point_of_hit, reflected + random_in_unit_sphere() * roughness, ray.time);
     // Pass the color of the material back for proper coloring
     attenuation = albedo;
     // We only scatter our ray if the direction of our scattering
@@ -137,7 +137,7 @@ bool Material::dielectric_scatter(const Ray& ray, const Point3& point_of_hit, co
     }
     // Cast our ray using the reflect or refract based on our
     // refraction decision
-    scattered_ray = Ray(point_of_hit, direction);
+    scattered_ray = Ray(point_of_hit, direction, ray.time);
     // Pass the color of the material back for proper coloring
     attenuation = albedo;
     // Always scatters

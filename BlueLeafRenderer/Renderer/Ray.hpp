@@ -15,10 +15,11 @@ class Ray {
 public:
     Point3 origin;
     Vector3 direction;
+    double time;
     
 public:
     Ray();
-    Ray(Point3 origin, Vector3 direction);
+    Ray(Point3 origin, Vector3 direction, double time);
     
     Point3 at(double t) const;
 };
