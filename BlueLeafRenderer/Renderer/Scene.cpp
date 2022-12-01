@@ -28,45 +28,33 @@ void Scene::clear() {
 /// surface normal and material of the object we hit
 /// - Parameters:
 ///   - ray: The ray coming from the origin to our viewport
-///   - point_of_hit: The point our ray hit our nearest object at
-///   - surface_normal: The normal at the point our ray hit our object
-///   - front_face: The direction of our surface normal (in or out)
-///   - object_material: The material of the object we hit
+///   - object_info: Info that will contain important information
+///   of the object and the point at which the ray hit our object, such as:
+///   the type of our object, point of hit, surface normal at point of hit,
+///   the ray that hit (which is the above ray), the object material, the t value
+///   that our ray hit our point of hit, direction of surface normal
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool Scene::findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, bool& front_face, Material& object_material, double t_min, double t_max) {
+bool Scene::get_nearest_object(const Ray& ray, ObjectInfo& object_info, double t_min, double t_max) {
     // No object found yet
     bool found_object = false;
-    int found_idx = -1;
     double curr_max_t = t_max;
     
     for (int i = 0; i < objects.size(); i++) {
         Object& object = objects[i];
         // Check if we hit this object in the range
         // of t values we are searching through
-        if (object.hit(ray, t_min, curr_max_t)) {
+        // If we did hit we will run our hit caluclations
+        // populating object info (even if we find a closer
+        // object this will still always calculate our
+        // object info which can slow down render times
+        // unless we are using a bvh to do our searching)
+        if (object.hit(ray, object_info, t_min, curr_max_t)) {
             found_object = true;
             // Move our search distance closer so
             // we could potentially find closer objects
-            curr_max_t = object.t;
-            // Update our found index to use for hit calc
-            found_idx = i;
+            curr_max_t = object.info.t;
         }
-    }
-    // Run our hit calculation if we found a nearest object
-    // we do this hear to avoid unecessary hit calculation
-    // above
-    if (found_idx != -1) {
-        Object& foundObject = objects[found_idx];
-        foundObject.calculate_hit();
-        // Pass back the point our object was hit at
-        // the normal of the object at that point and
-        // the material of the object and the direction
-        // of our surface normal
-        point_of_hit = foundObject.point_of_hit;
-        surface_normal = foundObject.surface_normal;
-        front_face = foundObject.front_face;
-        object_material = foundObject.object_material;
     }
     return found_object;
 }

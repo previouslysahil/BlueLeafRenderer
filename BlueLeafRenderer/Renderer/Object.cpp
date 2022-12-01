@@ -8,38 +8,39 @@
 #include "Object.hpp"
 
 /// Initalizes all values to zeros or false
-Object::Object(): type(Empty), point_of_hit(), surface_normal(), object_material(), ray_of_hit(), t(0), front_face(false), center_start(), center_end(), time_start(), time_end(), radius(0) {}
+Object::Object(): info { Empty, Point3(), Vector3(), Ray(), Material(), 0, false }, center(), radius(0) {}
 
 /// Initalizes all values to zeros or false except for center and radius which
 /// define the circles location and sets the object type to sphere
 /// USED ONLY FOR SPHERES
 /// - Parameters:
-///   - center_start: The center of our circle
+///   - center: The center of our circle
 ///   - radius: The radius of our circle
-///   - object_material: The material of this sphere object
-Object::Object(Point3 center_start, double radius, Material& object_material): type(Sphere), point_of_hit(), surface_normal(), object_material(object_material), ray_of_hit(), t(0), front_face(false), center_start(center_start), center_end(center_start), time_start(), time_end(), radius(radius) {}
-
-/// Initalizes all values to zeros or false except for center and radius which
-/// define the circles location and sets the object type to sphere
-/// USED ONLY FOR SPHERES (MOVING)
-/// - Parameters:
-///   - center_start: The beginning center of our moving circle
-///   - center_end: The ending center of our moving circle
-///   - time_start: The time where our sphere is at center start
-///   - time_end: The time where our sphere is at center end
-///   - radius: The radius of our circle
-///   - object_material: The material of this sphere object
-Object::Object(Point3 center_start, Point3 center_end, double time_start, double time_end, double radius, Material& object_material): type(Sphere), point_of_hit(), surface_normal(), object_material(object_material), ray_of_hit(), t(0), front_face(false), center_start(center_start), center_end(center_end), time_start(time_start), time_end(time_end), radius(radius) {}
+///   - material: The material of this sphere object
+Object::Object(Point3 center, double radius, Material& material): info { Sphere, Point3(), Vector3(), Ray(), Material(material), 0, false }, center(center), radius(radius) {
+    switch (info.type) {
+        case Sphere:
+            bounding_box = sphere_bounding_box();
+            return;
+        case Empty:
+            return;
+        default:
+            return;
+    }
+    return;
+}
 
 /// Determines which hit function we should use depending on the object type
 /// - Parameters:
 ///   - ray: The ray we cast from the origin point to our viewport
+///   - found_info: General info on our object such as material
+///   and hit information
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool Object::hit(const Ray& ray, double t_min, double t_max) {
-    switch (type) {
+bool Object::hit(const Ray& ray, ObjectInfo& found_info, double t_min, double t_max) {
+    switch (info.type) {
         case Sphere:
-            return sphere_hit(ray, t_min, t_max);
+            return sphere_hit(ray, found_info, t_min, t_max);
         case Empty:
             return false;
         default:
@@ -50,15 +51,18 @@ bool Object::hit(const Ray& ray, double t_min, double t_max) {
 
 /// Calculates the hit equation of sphere given by (A + tb - C)(A + tb - C) = r^2
 /// by solving for t, less than 0 means no miss, exactly 0 means 1 hit, greater
-/// than zero means two solutions, returns the t value along our ray that we
-/// hit our sphere or -1.0 if we did not hit our sphere
+/// than zero means two solutions, after getting this t value we can calculate
+/// our point of hit and surface normal, returns true if we found a t and will
+/// pass back our object info for use elsewhere
 /// USED ONLY FOR SPHERES
 /// - Parameters:
 ///   - ray: The ray we cast from the origin point to our viewport
+///   - found_info: Populates general info on our object such as material
+///   and hit information
 ///   - t_min: The minimum t value we should acknowledge as a hit
 ///   - t_max: The maximum t value we should acknowledge as a hit
-bool Object::sphere_hit(const Ray& ray, double t_min, double t_max) {
-    Vector3 oc = ray.origin - center(ray.time);
+bool Object::sphere_hit(const Ray& ray, ObjectInfo& found_info, double t_min, double t_max) {
+    Vector3 oc = ray.origin - center;
     double a = ray.direction.length_squared();
     double half_b = dot(oc, ray.direction);
     double c = oc.length_squared() - radius * radius;
@@ -77,36 +81,15 @@ bool Object::sphere_hit(const Ray& ray, double t_min, double t_max) {
             return false;
         }
     }
-    // Cache our t and ray of hit in case we want to calculate
-    // this hit
-    t = root;
-    ray_of_hit = ray;
+    // Cache our info of this hit
+    info.t = root;
+    info.ray_of_hit = ray;
+    info.point_of_hit = info.ray_of_hit.at(info.t);
+    Vector3 outward_normal = (info.point_of_hit - center) / radius;
+    set_surface_normal(info.ray_of_hit, outward_normal);
+    // Send our info back
+    found_info = info;
     return true;
-}
-
-
-/// Determines which calculate hit function we should use depending on the object type
-void Object::calculate_hit() {
-    switch (type) {
-        case Sphere:
-            sphere_calculate_hit();
-            return;
-        case Empty:
-            return;
-        default:
-            return;
-    }
-    return;
-}
-
-/// This function assumes that t has been set which will always occur if the hit function
-/// returns true, assuming yes it will generate the point our ray hit our object at and also
-/// generate the surface normal
-/// USED ONLY FOR SPHERES
-void Object::sphere_calculate_hit() {
-    point_of_hit = ray_of_hit.at(t);
-    Vector3 outward_normal = (point_of_hit - center(ray_of_hit.time)) / radius;
-    set_surface_normal(ray_of_hit, outward_normal);
 }
 
 /// Uses the outward normal of our object and the ray direction to determine whether
@@ -122,23 +105,13 @@ void Object::sphere_calculate_hit() {
 void Object::set_surface_normal(const Ray& ray, const Vector3& outward_normal) {
     // Dot product less than 0 implies the ray and outward normal are goin
     // against each other AKA ray is outside object
-    front_face = dot(ray.direction, outward_normal) < 0;
+    info.front_face = dot(ray.direction, outward_normal) < 0;
     // Based on the direction of our ray to our object/ if we are inside
     // or outside our object we change the surface normal
-    surface_normal = front_face ? outward_normal : -outward_normal;
+    info.surface_normal = info.front_face ? outward_normal : -outward_normal;
 }
 
-/// Calculates our center location given the time value provided
-/// by the time param using our time start and time end as
-/// our range, to mitigate calculations we first check if the time
-/// start and time end are the same to see if we have a moving
-/// object
-/// - Parameter time: The time provided should be in range
-Point3 Object::center(double time) const {
-    // Only give a 'moving' center if we have a
-    // time range
-    if (fabs(time_start - time_end) < __DBL_EPSILON__) {
-        return center_start;
-    }
-    return center_start + (center_end - center_start) * ((time - time_start) / (time_end - time_start));
+/// A box around our sphere object used to speed up hit detection
+AABB Object::sphere_bounding_box() const {
+    return AABB(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
 }

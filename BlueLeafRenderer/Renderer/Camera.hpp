@@ -19,11 +19,9 @@ private:
     Vector3 vertical;
     Vector3 local_z, local_x, local_y;
     double lens_radius;
-    double time_start;
-    double time_end;
     
 public:
-    Camera(double image_width, double image_height, Point3 lookfrom, Point3 lookat, Vector3 vup, double vfov, double aperture, double time_start, double time_end);
+    Camera(double image_width, double image_height, Point3 lookfrom, Point3 lookat, Vector3 vup, double vfov, double aperture);
     Ray create_ray(double h, double v) const;
 };
 

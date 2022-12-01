@@ -23,7 +23,7 @@ public:
     void add(Object& object);
     void clear();
     
-    bool findNearestObject(const Ray& ray, Point3& point_of_hit, Vector3& surface_normal, bool& front_face, Material& object_material, double t_min, double t_max);
+    bool get_nearest_object(const Ray& ray, ObjectInfo& object_info, double t_min, double t_max);
 };
 
 #endif /* Scene_hpp */

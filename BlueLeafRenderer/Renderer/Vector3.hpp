@@ -20,6 +20,7 @@ public:
     double length() const;
     double length_squared() const;
     bool near_zero() const;
+    const double& operator[](int i) const;
 };
 
 /// The mathematical application and interchangeability of points

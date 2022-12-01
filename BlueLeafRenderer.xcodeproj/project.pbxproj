@@ -23,6 +23,8 @@
 		64BD3527293299A3004FC9ED /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD3525293299A3004FC9ED /* Object.cpp */; };
 		64BD352A2932A366004FC9ED /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD35282932A366004FC9ED /* Material.cpp */; };
 		64BD352C29355839004FC9ED /* RendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BD352B29355839004FC9ED /* RendererView.swift */; };
+		64BD352F2936BAAC004FC9ED /* AABB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD352D2936BAAC004FC9ED /* AABB.cpp */; };
+		64BD353229370F6E004FC9ED /* BVH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD353029370F6E004FC9ED /* BVH.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +58,10 @@
 		64BD35282932A366004FC9ED /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
 		64BD35292932A366004FC9ED /* Material.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Material.hpp; sourceTree = "<group>"; };
 		64BD352B29355839004FC9ED /* RendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererView.swift; sourceTree = "<group>"; };
+		64BD352D2936BAAC004FC9ED /* AABB.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AABB.cpp; sourceTree = "<group>"; };
+		64BD352E2936BAAC004FC9ED /* AABB.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AABB.hpp; sourceTree = "<group>"; };
+		64BD353029370F6E004FC9ED /* BVH.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BVH.cpp; sourceTree = "<group>"; };
+		64BD353129370F6E004FC9ED /* BVH.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BVH.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +139,10 @@
 				64BD3526293299A3004FC9ED /* Object.hpp */,
 				64BD35282932A366004FC9ED /* Material.cpp */,
 				64BD35292932A366004FC9ED /* Material.hpp */,
+				64BD352D2936BAAC004FC9ED /* AABB.cpp */,
+				64BD352E2936BAAC004FC9ED /* AABB.hpp */,
+				64BD353029370F6E004FC9ED /* BVH.cpp */,
+				64BD353129370F6E004FC9ED /* BVH.hpp */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -216,7 +226,9 @@
 				6480A44D292F09F000C6F19C /* ContentView.swift in Sources */,
 				64BD3527293299A3004FC9ED /* Object.cpp in Sources */,
 				64B144F12931976800265549 /* Renderer.swift in Sources */,
+				64BD353229370F6E004FC9ED /* BVH.cpp in Sources */,
 				645D3677293150D30062DA78 /* RendererWrapper.cpp in Sources */,
+				64BD352F2936BAAC004FC9ED /* AABB.cpp in Sources */,
 				64907CE1293073C500A1C486 /* Camera.cpp in Sources */,
 				6480A44B292F09F000C6F19C /* BlueLeafRendererApp.swift in Sources */,
 				6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */,
