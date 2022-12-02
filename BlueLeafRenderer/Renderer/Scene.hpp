@@ -10,20 +10,23 @@
 
 #include "Object.hpp"
 #include "Material.hpp"
+#include "BVH.hpp"
 
 #include <vector>
 
 class Scene {
-public:
+private:
     std::vector<Object> objects;
+    std::vector<BVH> bvhs;
     
 public:
     Scene();
     
     void add(Object& object);
+    void add(BVH& bvh);
     void clear();
     
-    bool get_nearest_object(const Ray& ray, ObjectInfo& object_info, double t_min, double t_max);
+    bool get_nearest_object(const Ray& ray, ObjectInfo& info, double t_min, double t_max);
 };
 
 #endif /* Scene_hpp */

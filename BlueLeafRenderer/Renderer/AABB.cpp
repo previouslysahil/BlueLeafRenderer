@@ -9,8 +9,13 @@
 
 #include <algorithm>
 
+/// Initializes values to default
 AABB::AABB(): minimum(), maximum() {}
 
+/// Initializes minimum and maximum
+/// - Parameters:
+///   - minimum: The minimum point on our bounding box
+///   - maximum: The maximum point on our bounding box
 AABB::AABB(const Point3& minimum, const Point3& maximum): minimum(minimum), maximum(maximum) {}
 
 /// This function checks whether a ray intersects our AABB at all three axses

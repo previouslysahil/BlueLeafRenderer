@@ -29,21 +29,36 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
 {
     // Our materials
     Material mat_ground(Color(0.3, 0.2, 0.8), 0, 0, Lambertian);
-    Material mat_center(Color(0.3, 0.08, 0.343), 0, 0, Lambertian);
-    Material mat_left(Color(0.95, 0.97, 1), 0, 1.5, Dielectric);
-    Material mat_right(Color(0.9, 0.6, 0.5), 0.1, 0, Metal);
+    Material mat_diffuse(Color(0.86, 0.84, 0.943), 0, 0, Lambertian);
+    Material mat_glass(Color(0.95, 0.97, 1), 0, 1.5, Dielectric);
+    Material mat_metal(Color(0.9, 0.6, 0.5), 0.1, 0, Metal);
+    // Make our bvh
+    BVH bvh;
     // Our objects
     Object ground(Point3(0, -100.5, -1), 100, mat_ground);
-    Object center(Point3(0, 0, -1), 0.5, mat_center);
-    Object left(Point3(-1, 0, -1), 0.5, mat_left);
-    Object left_in(Point3(-1, 0, -1), -0.45, mat_left);
-    Object right(Point3(1, 0, -1), 0.5, mat_right);
+    // Make a giant cube of circles
+    int count = 10;
+    for (int i = 0; i < count; i++) {
+        for (int j = 0; j < count; j++) {
+            for (int w = 0; w < count; w++) {
+                double rand_x = random_double(-0.03, 0.03);
+                double rand_y = random_double(-0.03, 0.03);
+                double rand_z = random_double(-0.03, 0.03);
+                double radius = 0.04;
+                Object center(Point3(double(i) / double(count) - 0.5 + rand_x, double(j) / double(count) - 0.5 + rand_y + radius, -double(w) / double(count) - 0.5 + rand_z), radius, mat_diffuse);
+                bvh.add(center);
+            }
+        }
+    }
+    Object left(Point3(-1, 0, -1), 0.5, mat_glass);
+    Object left_in(Point3(-1, 0, -1), -0.45, mat_glass);
+    Object right(Point3(1, 0, -1), 0.5, mat_metal);
     // scene is default init'd so no need to init
     scene.add(ground);
-    scene.add(center);
     scene.add(left);
     scene.add(left_in);
     scene.add(right);
+    scene.add(bvh);
 }
 
 /// Makes our color at the point of intersection of our ray
@@ -61,16 +76,16 @@ Color Renderer::ray_color(const Ray& ray, Scene& scene, int bounces) const {
     // we are unable to scatter a ray or hit our sky
     for (int i = 0; i < bounces; i++) {
         // ObjectInfo struct for nearest object hit information
-        ObjectInfo nearest_object_info;
+        ObjectInfo nearest_object;
         // Find an object to hit
-        if (scene.get_nearest_object(curr_ray, nearest_object_info, 0.001, std::numeric_limits<double>::infinity())) {
+        if (scene.get_nearest_object(curr_ray, nearest_object, 0.001, std::numeric_limits<double>::infinity())) {
             // Properties to be populated by our material scattering function
             // for proper ray casting and color
             Ray scattered_ray;
             Color scattered_attenuation;
             // Now we attempt to scatter our ray using the object's material's
             // scattering function
-            if (nearest_object_info.material.scatter(curr_ray, nearest_object_info.point_of_hit, nearest_object_info.surface_normal, nearest_object_info.front_face, scattered_attenuation, scattered_ray)) {
+            if (nearest_object.material.scatter(curr_ray, nearest_object.point_of_hit, nearest_object.surface_normal, nearest_object.front_face, scattered_attenuation, scattered_ray)) {
                 // We use our scattered attenuation (which is the color of our material)
                 // to further color our ray using the existing attenuation
                 curr_attenuation = scattered_attenuation * curr_attenuation;

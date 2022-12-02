@@ -9,7 +9,7 @@
 #include "LinearAlgebra.hpp"
 
 /// Initalizes all values to default
-Material::Material(): albedo(), type(None), roughness(0), index_of_refraction(0) {}
+Material::Material(): type(None), albedo(), roughness(0), index_of_refraction(0) {}
 
 /// Initalizes albedo, type, roughness which is capped at 1, and index of refraction
 /// - Parameters:
@@ -17,7 +17,7 @@ Material::Material(): albedo(), type(None), roughness(0), index_of_refraction(0)
 ///   - roughness: The roughness of our metal
 ///   - index_of_refraction: The ior of our dielectirc used to make refraction ray
 ///   - type: The type of the material
-Material::Material(Color albedo, double roughness, double index_of_refraction, MaterialType type): albedo(albedo), type(type), roughness(roughness < 1 ? roughness : 1), index_of_refraction(index_of_refraction) {}
+Material::Material(Color albedo, double roughness, double index_of_refraction, MaterialType type): type(type), albedo(albedo), roughness(roughness < 1 ? roughness : 1), index_of_refraction(index_of_refraction) {}
 
 /// Determines which scattering function to use based on the material type we have
 /// Returns true if we can properly scatter this material else false

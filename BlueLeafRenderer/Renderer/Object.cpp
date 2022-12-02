@@ -6,12 +6,14 @@
 //
 
 #include "Object.hpp"
+#include <iostream>
 
 /// Initalizes all values to zeros or false
-Object::Object(): info { Empty, Point3(), Vector3(), Ray(), Material(), 0, false }, center(), radius(0) {}
+Object::Object(): info { Empty, Point3(), Vector3(), Ray(), Material(), 0, false }, bounding_box(), center(), radius(0) {}
 
 /// Initalizes all values to zeros or false except for center and radius which
-/// define the circles location and sets the object type to sphere
+/// define the circles location and sets the object type to sphere, also
+/// makes the bounding box of the sphere
 /// USED ONLY FOR SPHERES
 /// - Parameters:
 ///   - center: The center of our circle

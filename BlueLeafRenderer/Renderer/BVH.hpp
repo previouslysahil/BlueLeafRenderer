@@ -11,7 +11,6 @@
 #include "Object.hpp"
 #include "AABB.hpp"
 
-#include <memory>
 #include <vector>
 
 struct BVHNode {
@@ -26,15 +25,22 @@ public:
 class BVH {
 public:
     std::vector<BVHNode> nodes;
-    std::vector<Object>& objects;
+    std::vector<Object> objects;
+    std::vector<int> objects_idx;
 public:
     BVH();
-    BVH(std::vector<Object>& objects);
+    
+    void add(Object& object);
+    void clear();
+    
+    void generate_tree();
+    void print_tree();
     
     bool hit(const Ray& ray, ObjectInfo& info, int idx, double t_min, double t_max);
 private:
-    void update_node_bounds(std::vector<BVHNode>& nodes, std::vector<Object>& objects, int idx);
-    void subdivide_node(std::vector<BVHNode>& nodes, std::vector<Object>& objects, int idx, int& nodes_created);
+    void print_tree_helper(int idx);
+    void create_node_bounding_box(int idx);
+    void split_node(int idx, int& nodes_created);
 };
 
 #endif /* BVH_hpp */

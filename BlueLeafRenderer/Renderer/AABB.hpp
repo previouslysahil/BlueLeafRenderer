@@ -22,12 +22,21 @@ public:
     bool hit(const Ray& ray, double t_min, double t_max) const;
 };
 
+/// Makes a box that includes the minimum xyz'z and maximum xyz's of
+/// both boxes
+/// - Parameters:
+///   - box0: The first bounding box
+///   - box1: The second bounding box
 inline AABB surrounding_box(const AABB& box0, const AABB& box1) {
     Point3 small(fmin(box0.minimum.x, box1.minimum.x), fmin(box0.minimum.y, box1.minimum.y), fmin(box0.minimum.z, box1.minimum.z));
     Point3 big(fmax(box0.maximum.x, box1.maximum.x), fmax(box0.maximum.y, box1.maximum.y), fmax(box0.maximum.z, box1.maximum.z));
     return AABB(small, big);
 }
 
+/// Finds the longest axis in our AABB given the length
+/// of each axis
+/// - Parameter length: The length of each axis usually
+/// computed by maximum - minimum
 inline int longest_axis(const Vector3& length) {
     int axis = 0;
     if (length.y > length.x) axis = 1;
