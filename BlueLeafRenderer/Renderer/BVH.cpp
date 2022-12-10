@@ -12,9 +12,16 @@
 /// Empty initializes all arrays
 BVH::BVH(): nodes(), objects(), objects_idx() {}
 
+/// Deallocates all our heap allocated objects in our bvh tree
+void BVH::deallocate_objects() {
+    for (int i = 0; i < objects.size(); i++) {
+        delete objects[i];
+    }
+}
+
 /// Adds a object to our scene
 /// - Parameter object: The object to be added
-void BVH::add(Object& object) {
+void BVH::add(Object* object) {
     objects.push_back(object);
 }
 
@@ -64,8 +71,8 @@ void BVH::print_tree_helper(int idx) {
         std::cout << "(";
         for (int i = 0; i < node.objs_count; i++) {
             // Get our object through out objects index array since node tracs objects_idx
-            Object& object = objects[objects_idx[node.first_obj_idx + i]];
-            std::cout << object.info.material.albedo.g;
+            Object* object = objects[objects_idx[node.first_obj_idx + i]];
+            std::cout << object->info.material->albedo.g;
             if (i != node.objs_count - 1) {
                 std::cout << " ";
             }
@@ -86,6 +93,7 @@ void BVH::print_tree_helper(int idx) {
 /// to minimize hit calculations.
 /// Returns true if we found and object to hit and passes back the point of hit,
 /// surface normal and material of the object we hit
+/// UNROLL THIS TO WHILE LOOP AT SOME POINT
 /// - Parameters:
 ///   - ray: The ray coming from the origin to our viewport
 ///   - info: Info that will contain important information
@@ -109,21 +117,21 @@ bool BVH::hit(const Ray& ray, ObjectInfo& info, int idx, double t_min, double t_
         // i.e. circle inside circle with same center
         if (node.objs_count == 1) {
             // Get our object through out objects index array since node tracs objects_idx
-            return objects[objects_idx[node.first_obj_idx]].hit(ray, info, t_min, t_max);
+            return objects[objects_idx[node.first_obj_idx]]->hit(ray, info, t_min, t_max);
         } else {
             bool hit_object = false;
             double curr_max_t = t_max;
             // Loop through our objects and find the closest one we hit
             for (int i = 0; i < node.objs_count; i++) {
                 // Get our object through out objects index array since node tracs objects_idx
-                Object& object = objects[objects_idx[node.first_obj_idx + i]];
+                Object* object = objects[objects_idx[node.first_obj_idx + i]];
                 // Will only populate info we have a hit in our
                 // t range
-                if (object.hit(ray, info, t_min, curr_max_t)) {
+                if (object->hit(ray, info, t_min, curr_max_t)) {
                     hit_object = true;
                     // Reset t range so we register hit on
                     // the closest object
-                    curr_max_t = object.info.t;
+                    curr_max_t = object->info.t;
                 }
             }
             return hit_object;
@@ -154,7 +162,7 @@ void BVH::create_node_bounding_box(int idx) {
         // Make a bounding box using the existing nodes bounding
         // box and this objects bounding box
         // Get our object through out objects index array since node tracks objects_idx
-        node.bounding_box = surrounding_box(node.bounding_box, objects[objects_idx[node.first_obj_idx + i]].bounding_box);
+        node.bounding_box = surrounding_box(node.bounding_box, objects[objects_idx[node.first_obj_idx + i]]->bounding_box);
     }
 }
 
@@ -193,7 +201,7 @@ void BVH::split_node(int idx, int& nodes_created) {
     // elements to the left side)
     while (i <= j) {
         // Get our object through out objects index array since node tracs objects_idx
-        if (objects[objects_idx[i]].center[axis] < middle_point) {
+        if (objects[objects_idx[i]]->center[axis] < middle_point) {
             i++;
         } else {
             // IMPORTANT: Swap our object through out objects index array since

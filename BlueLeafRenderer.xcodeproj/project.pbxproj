@@ -14,6 +14,7 @@
 		6480A452292F09F200C6F19C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6480A451292F09F200C6F19C /* Preview Assets.xcassets */; };
 		6480A45C292F1A8E00C6F19C /* ImageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6480A45B292F1A8E00C6F19C /* ImageFactory.swift */; };
 		6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6480A475292F2D9200C6F19C /* Renderer.cpp */; };
+		6485FDE2293B060C00A17EB9 /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6485FDE0293B060C00A17EB9 /* Sphere.cpp */; };
 		64907CC6292FF52000A1C486 /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CC4292FF52000A1C486 /* Vector3.cpp */; };
 		64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CCA292FF7EB00A1C486 /* Color.cpp */; };
 		64907CD2292FFF9F00A1C486 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CD0292FFF9F00A1C486 /* Ray.cpp */; };
@@ -40,6 +41,8 @@
 		6480A474292F2D9100C6F19C /* BlueLeafRenderer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlueLeafRenderer-Bridging-Header.h"; sourceTree = "<group>"; };
 		6480A475292F2D9200C6F19C /* Renderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
 		6480A476292F2D9200C6F19C /* Renderer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Renderer.hpp; sourceTree = "<group>"; };
+		6485FDE0293B060C00A17EB9 /* Sphere.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
+		6485FDE1293B060C00A17EB9 /* Sphere.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Sphere.hpp; sourceTree = "<group>"; };
 		64907CC4292FF52000A1C486 /* Vector3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3.cpp; sourceTree = "<group>"; };
 		64907CC5292FF52000A1C486 /* Vector3.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Vector3.hpp; sourceTree = "<group>"; };
 		64907CCA292FF7EB00A1C486 /* Color.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
@@ -137,6 +140,8 @@
 				64907CE0293073C500A1C486 /* Camera.hpp */,
 				64BD3525293299A3004FC9ED /* Object.cpp */,
 				64BD3526293299A3004FC9ED /* Object.hpp */,
+				6485FDE0293B060C00A17EB9 /* Sphere.cpp */,
+				6485FDE1293B060C00A17EB9 /* Sphere.hpp */,
 				64BD35282932A366004FC9ED /* Material.cpp */,
 				64BD35292932A366004FC9ED /* Material.hpp */,
 				64BD352D2936BAAC004FC9ED /* AABB.cpp */,
@@ -225,6 +230,7 @@
 				64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */,
 				6480A44D292F09F000C6F19C /* ContentView.swift in Sources */,
 				64BD3527293299A3004FC9ED /* Object.cpp in Sources */,
+				6485FDE2293B060C00A17EB9 /* Sphere.cpp in Sources */,
 				64B144F12931976800265549 /* Renderer.swift in Sources */,
 				64BD353229370F6E004FC9ED /* BVH.cpp in Sources */,
 				645D3677293150D30062DA78 /* RendererWrapper.cpp in Sources */,
@@ -358,6 +364,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BlueLeafRenderer/BlueLeafRenderer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -388,6 +395,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BlueLeafRenderer/BlueLeafRenderer.entitlements;
 				CODE_SIGN_STYLE = Automatic;

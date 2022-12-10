@@ -52,20 +52,21 @@ class Renderer: ObservableObject {
         Task {
             print("Starting rendering")
             let start = CFAbsoluteTimeGetCurrent()
+            // Make an empty buffer we will use for rendering
+            let renderBuffer = UnsafeMutableBufferPointer<UInt32>.allocate(capacity: width * height)
             for sample in 1...samples {
                 print("Sample \(sample): Started rendering")
                 let startRender = CFAbsoluteTimeGetCurrent()
-                // We make our render using c++ renderer class
-                let renderBuffer = Renderer_render_buffer(cRenderer, Int32(sample))
+                // We make our render using C++ renderer class (bridged by C) and store
+                // the result in our renderBuffer
+                Renderer_render_buffer(cRenderer, renderBuffer.baseAddress!, Int32(sample))
                 let diffRender = CFAbsoluteTimeGetCurrent() - startRender
                 print("Sample \(sample): Rendering took \(diffRender) seconds")
                 // Create our image from our render buffer
                 let startImageCreate = CFAbsoluteTimeGetCurrent()
-                // We create our cgImage using the 32bit pixel data of our render
-                let image = factory.create(using: renderBuffer!, width: width, height: height)
-                // Free our pointer to our buffer we are done with it
-                // since we init'd on the heap in Renderer.cpp
-                renderBuffer!.deallocate()
+                // We create our cgImage using the 32bit pixel data populated
+                // into our renderBuffer
+                let image = factory.create(using: renderBuffer.baseAddress!, width: width, height: height)
                 let diffImageCreate = CFAbsoluteTimeGetCurrent() - startImageCreate
                 print("Sample \(sample): Image create took \(diffImageCreate) seconds")
                 // Slightly slows execution because this requires redrawing our view hiearchy
@@ -80,6 +81,66 @@ class Renderer: ObservableObject {
                     }
                 }
             }
+            // Free our buffer pointer
+            renderBuffer.deallocate()
+            let diff = CFAbsoluteTimeGetCurrent() - start
+            print("Total render took \(diff) seconds")
+            // Somehting about maybe using a CAMetalLayer instead of SwiftUI.Image?
+            // Printing to console adds to render times slightly
+        }
+    }
+    
+    /// Renderer our image for the given number of samples publishing
+    /// the image to view after each tile sample is completed
+    /// RUNS SLOWER THAN NON TILED APPROACH WHY?
+    func createImageTiled(_ tile_size: Int) {
+        withAnimation(.spring()) {
+            state = .running
+        }
+        Task {
+            print("Starting rendering")
+            let start = CFAbsoluteTimeGetCurrent()
+            // Make an empty buffer we will use for rendering
+            let renderBuffer = UnsafeMutableBufferPointer<UInt32>.allocate(capacity: width * height)
+            let h_rm = height % tile_size
+            let w_rm = width % tile_size
+            var j = height - 1
+            var i = 0
+            while j >= h_rm - 1 {
+                while i <= width - w_rm {
+                    for sample in 1...samples {
+                        print("Sample \(sample): Started rendering")
+                        let startRender = CFAbsoluteTimeGetCurrent()
+                        // We make our render using C++ renderer class (bridged by C) and store
+                        // the result in our renderBuffer
+                        Renderer_render_buffer_tiled(cRenderer, renderBuffer.baseAddress!, Int32(sample), Int32(tile_size), Int32(j), Int32(i), Int32(h_rm), Int32(w_rm))
+                        let diffRender = CFAbsoluteTimeGetCurrent() - startRender
+                        print("Sample \(sample): Rendering took \(diffRender) seconds")
+                        // Create our image from our render buffer
+                        let startImageCreate = CFAbsoluteTimeGetCurrent()
+                        // We create our cgImage using the 32bit pixel data populated
+                        // into our renderBuffer
+                        let image = factory.create(using: renderBuffer.baseAddress!, width: width, height: height)
+                        let diffImageCreate = CFAbsoluteTimeGetCurrent() - startImageCreate
+                        print("Sample \(sample): Image create took \(diffImageCreate) seconds")
+                        // Slightly slows execution because this requires redrawing our view hiearchy
+                        await MainActor.run {
+                            self.image = image
+                            self.sampleCount = sample
+                        }
+                    }
+                    i += tile_size
+                }
+                j -= tile_size
+                i = 0
+            }
+            await MainActor.run {
+                withAnimation(.spring()) {
+                    state = .done
+                }
+            }
+            // Free our buffer pointer
+            renderBuffer.deallocate()
             let diff = CFAbsoluteTimeGetCurrent() - start
             print("Total render took \(diff) seconds")
             // Somehting about maybe using a CAMetalLayer instead of SwiftUI.Image?

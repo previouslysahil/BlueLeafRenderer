@@ -13,17 +13,11 @@
 #include "Material.hpp"
 #include "AABB.hpp"
 
-enum ObjectType {
-    Empty,
-    Sphere
-};
-
 struct ObjectInfo {
-    ObjectType type;
     Point3 point_of_hit;
     Vector3 surface_normal;
     Ray ray_of_hit;
-    Material material;
+    Material* material;
     double t;
     bool front_face;
 };
@@ -32,23 +26,16 @@ class Object {
 public:
     // General attributes used by all objects
     ObjectInfo info;
-    AABB bounding_box;
     Point3 center;
-private:
-    // Attributes specific to spheres (other object)
-    // specific attributes will also go here
-    double radius;
+    AABB bounding_box;
 public:
     Object();
-    // Used only for spheres
-    Object(Point3 center, double radius, Material& material);
+    Object(Material* material, Point3 center);
+    virtual ~Object() = default;
     
-    bool hit(const Ray& ray, ObjectInfo& info, double t_min, double t_max);
-private:
+    virtual bool hit(const Ray& ray, ObjectInfo& info, double t_min, double t_max) = 0;
+    virtual AABB make_bounding_box() const = 0;
     void set_surface_normal(const Ray& ray, const Vector3& outward_normal);
-    // Used only for sphere
-    bool sphere_hit(const Ray& ray, ObjectInfo& info, double t_min, double t_max);
-    AABB sphere_bounding_box() const;
 };
 
 #endif /* Object_hpp */

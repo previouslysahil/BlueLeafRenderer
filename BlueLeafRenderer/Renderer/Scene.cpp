@@ -7,14 +7,33 @@
 
 #include "Scene.hpp"
 
-#include <iostream>
-
 /// Initializes object and bvhs to empty
 Scene::Scene(): objects(), bvhs() {};
 
+/// Deallocates all our heap allocated objects in our scene
+void Scene::deallocate_objects() {
+    for (int i = 0; i < objects.size(); i++) {
+        delete objects[i];
+    }
+}
+
+/// Deallocates all our heap allocated objects in our bvhs
+void Scene::deallocate_bvhs() {
+    for (int i = 0; i < bvhs.size(); i++) {
+        bvhs[i].deallocate_objects();
+    }
+}
+
+/// Deallocates all our heap allocated materials in our scene
+void Scene::deallocate_materials() {
+    for (int i = 0; i < materials.size(); i++) {
+        delete materials[i];
+    }
+}
+
 /// Adds a object to our scene
 /// - Parameter object: The object to be added
-void Scene::add(Object& object) {
+void Scene::add(Object* object) {
     objects.push_back(object);
 }
 
@@ -25,10 +44,10 @@ void Scene::add(BVH& bvh) {
     bvhs.push_back(bvh);
 }
 
-/// Removes all objects from our scene
-void Scene::clear() {
-    objects.clear();
-    bvhs.clear();
+/// Adds a material to our scene
+/// - Parameter material: The object to be added
+void Scene::add(Material* material) {
+    materials.push_back(material);
 }
 
 /// Uses our ray and min and max ts to determine whether we have hit an object
@@ -67,7 +86,7 @@ bool Scene::get_nearest_object(const Ray& ray, ObjectInfo& info, double t_min, d
     // Exhausted bvhs so see if we can find a hit or a closer
     // hit with another scene object
     for (int i = 0; i < objects.size(); i++) {
-        Object& object = objects[i];
+        Object*& object = objects[i];
         // Check if we hit this object in the range
         // of t values we are searching through
         // If we did hit we will run our hit caluclations
@@ -75,7 +94,7 @@ bool Scene::get_nearest_object(const Ray& ray, ObjectInfo& info, double t_min, d
         // object this will still always calculate our
         // object info which can slow down render times
         // unless we are using a bvh to do our searching)
-        if (object.hit(ray, info, t_min, curr_max_t)) {
+        if (object->hit(ray, info, t_min, curr_max_t)) {
             found_object = true;
             // Move our search distance closer so
             // we could potentially find closer objects

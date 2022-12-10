@@ -12,6 +12,7 @@
 #include "AABB.hpp"
 
 #include <vector>
+#include <memory>
 
 struct BVHNode {
 public:
@@ -25,13 +26,15 @@ public:
 class BVH {
 public:
     std::vector<BVHNode> nodes;
-    std::vector<Object> objects;
+    std::vector<Object*> objects;
     std::vector<int> objects_idx;
 public:
     BVH();
     
-    void add(Object& object);
+    void add(Object* object);
     void clear();
+    
+    void deallocate_objects();
     
     void generate_tree();
     void print_tree();

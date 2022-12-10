@@ -9,12 +9,15 @@
 #define Utility_hpp
 
 #include <cstdlib>
+#include <random>
 
 const double pi = 3.1415926535897932385;
 
 /// Generates a random double between 0 and 1
 inline double random_double() {
-    return rand() / (RAND_MAX + 1.0);
+    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    static std::mt19937 generator;
+    return distribution(generator);
 }
 
 /// Generates a random double between a min and max

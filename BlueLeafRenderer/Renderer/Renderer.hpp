@@ -29,7 +29,10 @@ private:
     Camera camera;
 public:
     Renderer(int width, int height, int samples_per_pixel, int max_bounces);
-    uint32_t* render_buffer(int curr_sample);
+    void deallocate_scene();
+    
+    void render_buffer(uint32_t* buffer, int curr_sample);
+    void render_buffer_tiled(uint32_t* buffer, int curr_sample, int tile_size, int tile_h, int tile_w, int h_rm, int w_rm);
 private:
     Color ray_color(const Ray& ray, Scene& scene, int bounces) const;
     Color ray_color_seq(const Ray& ray, Scene& scene, int bounces) const;

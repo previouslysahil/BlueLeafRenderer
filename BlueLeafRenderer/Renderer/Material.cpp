@@ -8,19 +8,33 @@
 #include "Material.hpp"
 #include "LinearAlgebra.hpp"
 
-/// Initalizes all values to default
-Material::Material(): type(None), albedo(), roughness(0), index_of_refraction(0) {}
+/// Initalizes albedo to zero
+Material::Material(): albedo() {}
 
-/// Initalizes albedo, type, roughness which is capped at 1, and index of refraction
+/// Initalizes albedo
+/// - Parameters:
+///   - albedo: The color of the material
+Material::Material(Color albedo): albedo(albedo) {}
+
+/// Initalizes albedo
+/// - Parameters:
+///   - albedo: The color of the lambertian
+Lambertian::Lambertian(Color albedo): Material(albedo) {}
+
+/// Initalizes albedo and roughness
 /// - Parameters:
 ///   - albedo: The color of the metal
 ///   - roughness: The roughness of our metal
-///   - index_of_refraction: The ior of our dielectirc used to make refraction ray
-///   - type: The type of the material
-Material::Material(Color albedo, double roughness, double index_of_refraction, MaterialType type): type(type), albedo(albedo), roughness(roughness < 1 ? roughness : 1), index_of_refraction(index_of_refraction) {}
+Metal::Metal(Color albedo, double roughness): Material(albedo), roughness(roughness < 1 ? roughness : 1) {}
 
-/// Determines which scattering function to use based on the material type we have
-/// Returns true if we can properly scatter this material else false
+/// Initalizes albedo and roughness
+/// - Parameters:
+///   - albedo: The color of the metal
+///   - index_of_refraction: The roughness of our metal
+Dielectric::Dielectric(Color albedo, double index_of_refraction): Material(albedo), index_of_refraction(index_of_refraction) {}
+
+/// Scatters using lambertian scattering which gets a random point on the unit sphere
+/// of our point of hit and uses this to create the vector directino of our scatter
 /// - Parameters:
 ///   - ray: The incoming ray that we will use to create our new scattered ray
 ///   - point_of_hit: The point our incoming ray hit our material's object at
@@ -29,38 +43,7 @@ Material::Material(Color albedo, double roughness, double index_of_refraction, M
 ///   - attenuation: The color that we will assign based on the materials color
 ///   at this point
 ///   - scattered_ray: The new ray that we will create of the above params
-bool Material::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
-    switch (type) {
-        case Lambertian:
-            // Lambertian scattering scatters our scattered ray in a random direction in
-            // the unit sphere of our surface normal
-            return lambertian_scatter(ray, point_of_hit, surface_normal, attenuation, scattered_ray);
-        case Metal:
-            // Metal scattering scatters our scattered ray by reflecting it across the
-            // surface normal
-            return metal_scatter(ray, point_of_hit, surface_normal, attenuation, scattered_ray);
-        case Dielectric:
-            // Dielectric scattering scatters either a refracted or reflected ray depending
-            // on whether snells law can be solved or not
-            return dielectric_scatter(ray, point_of_hit, surface_normal, front_face, attenuation, scattered_ray);
-        case None:
-            return false;
-        default:
-            return false;
-    }
-    return false;
-}
-
-/// Scatters using lambertian scattering which gets a random point on the unit sphere
-/// of our point of hit and uses this to create the vector directino of our scatter
-/// USED ONLY FOR LAMBERTIAN
-/// - Parameters:
-///   - point_of_hit: The point our incoming ray hit our material's object at
-///   - surface_normal: The surface normal of the point of hit
-///   - attenuation: The color that we will assign based on the materials color
-///   at this point
-///   - scattered_ray: The new ray that we will create of the above params
-bool Material::lambertian_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, Color& attenuation, Ray& scattered_ray) {
+bool Lambertian::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
     // This get the vector S that is cast from our point of hit's
     // surface normal to a point on the unit sphere of point of
     // hit + surface normal
@@ -80,15 +63,15 @@ bool Material::lambertian_scatter(const Ray& ray, const Point3& point_of_hit, co
 /// Scatters by reflecting the incoming ray across the normal at the point of hit and
 /// then randomly modulates this reflected ray using a random point in the unit sphere
 /// of the reflected ray to add roughness based on the provided roughness value
-/// USED ONLY FOR METAL
 /// - Parameters:
 ///   - ray: The incoming ray that we will use to create our new scattered ray
 ///   - point_of_hit: The point our incoming ray hit our material's object at
 ///   - surface_normal: The surface normal of the point of hit
+///   - front_face: The direction of our surface normal (in/ out)
 ///   - attenuation: The color that we will assign based on the materials color
 ///   at this point
 ///   - scattered_ray: The new ray that we will create of the above params
-bool Material::metal_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, Color& attenuation, Ray& scattered_ray) {
+bool Metal::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
     // For metal materials the direction of our new ray
     // is a reflection across our surface normal
     Vector3 reflected = reflect(unit_vector(ray.direction), surface_normal);
@@ -115,7 +98,7 @@ bool Material::metal_scatter(const Ray& ray, const Point3& point_of_hit, const V
 ///   - attenuation: The color that we will assign based on the materials color
 ///   at this point
 ///   - scattered_ray: The new ray that we will create of the above params
-bool Material::dielectric_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
+bool Dielectric::scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) {
     // Invert refractio ratio if normal direction is inward
     double refraction_ratio = front_face ? (1.0 / index_of_refraction) : index_of_refraction;
     

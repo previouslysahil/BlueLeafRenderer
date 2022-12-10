@@ -12,34 +12,37 @@
 #include "Vector3.hpp"
 #include "Ray.hpp"
 
-enum MaterialType {
-    None,
-    Lambertian,
-    Metal,
-    Dielectric
-};
-
 class Material {
 public:
-    MaterialType type;
     Color albedo;
-private:
-    // Used only for metal
-    double roughness;
-    // Used only for dielectric
-    double index_of_refraction;
 public:
     Material();
-    Material(Color albedo, double roughness, double index_of_refraction, MaterialType type);
+    Material(Color albedo);
+    virtual ~Material() = default;
     
-    bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray);
+    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) = 0;
+};
+
+class Lambertian: public Material {
+public:
+    Lambertian(Color albedo);
+    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) override;
+};
+
+class Metal: public Material {
 private:
-    // Used only for lambertian
-    bool lambertian_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, Color& attenuation, Ray& scattered_ray);
-    // Used only for metal
-    bool metal_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, Color& attenuation, Ray& scattered_ray);
-    // Used only for dielectric
-    bool dielectric_scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray);
+    double roughness;
+public:
+    Metal(Color albedo, double roughness);
+    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) override;
+};
+
+class Dielectric: public Material {
+private:
+    double index_of_refraction;
+public:
+    Dielectric(Color albedo, double index_of_refraction);
+    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) override;
 };
 
 
