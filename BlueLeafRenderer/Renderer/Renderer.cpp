@@ -28,11 +28,16 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     scene(),
     camera(double(width), double(height), Point3(3, 1.5, 3.5), Point3(0.12, -0.05, -1), Vector3(0, 1, 0), 20, 0.1)
 {
+    // Our textures (just solid colors for now)
+    SolidColor* tex_ground = new SolidColor(0.3, 0.2, 0.8);
+    SolidColor* tex_diffuse = new SolidColor(0.86, 0.84, 0.943);
+    SolidColor* tex_glass = new SolidColor(0.95, 0.97, 1);
+    SolidColor* tex_metal = new SolidColor(0.9, 0.6, 0.5);
     // Our materials
-    Lambertian* mat_ground = new Lambertian(Color(0.3, 0.2, 0.8));
-    Lambertian* mat_diffuse = new Lambertian(Color(0.86, 0.84, 0.943));
-    Dielectric* mat_glass = new Dielectric(Color(0.95, 0.97, 1), 1.5);
-    Metal* mat_metal = new Metal(Color(0.9, 0.6, 0.5), 0.1);
+    Lambertian* mat_ground = new Lambertian(tex_ground);
+    Lambertian* mat_diffuse = new Lambertian(tex_diffuse);
+    Dielectric* mat_glass = new Dielectric(tex_glass, 1.5);
+    Metal* mat_metal = new Metal(tex_metal, 0.1);
     // Add to scene so we can manage memory properly
     scene.add(mat_ground);
     scene.add(mat_diffuse);
@@ -75,6 +80,7 @@ void Renderer::deallocate_scene() {
     scene.deallocate_objects();
     scene.deallocate_bvhs();
     scene.deallocate_materials();
+    scene.deallocate_textures();
 }
 
 /// Makes our color at the point of intersection of our ray
@@ -101,7 +107,7 @@ Color Renderer::ray_color(const Ray& ray, Scene& scene, int bounces) const {
             Color scattered_attenuation;
             // Now we attempt to scatter our ray using the object's material's
             // scattering function
-            if (nearest_object.material->scatter(curr_ray, nearest_object.point_of_hit, nearest_object.surface_normal, nearest_object.front_face, scattered_attenuation, scattered_ray)) {
+            if (nearest_object.material->scatter(curr_ray, nearest_object, scattered_attenuation, scattered_ray)) {
                 // We use our scattered attenuation (which is the color of our material)
                 // to further color our ray using the existing attenuation
                 curr_attenuation = scattered_attenuation * curr_attenuation;

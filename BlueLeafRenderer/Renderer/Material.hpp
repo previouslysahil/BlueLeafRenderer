@@ -9,40 +9,43 @@
 #define Material_hpp
 
 #include "Color.hpp"
-#include "Vector3.hpp"
 #include "Ray.hpp"
+#include "Texture.hpp"
+#include "Object.hpp"
+
+struct ObjectInfo; // Circular dependency between Object.hpp and Material.hpp (we need ObjectInfo but Object.hpp needs Material)
 
 class Material {
 public:
-    Color albedo;
+    Texture* albedo;
 public:
     Material();
-    Material(Color albedo);
+    Material(Texture* albedo);
     virtual ~Material() = default;
     
-    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) = 0;
+    virtual bool scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) = 0;
 };
 
 class Lambertian: public Material {
 public:
-    Lambertian(Color albedo);
-    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) override;
+    Lambertian(Texture* albedo);
+    virtual bool scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) override;
 };
 
 class Metal: public Material {
 private:
     double roughness;
 public:
-    Metal(Color albedo, double roughness);
-    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) override;
+    Metal(Texture* albedo, double roughness);
+    virtual bool scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) override;
 };
 
 class Dielectric: public Material {
 private:
     double index_of_refraction;
 public:
-    Dielectric(Color albedo, double index_of_refraction);
-    virtual bool scatter(const Ray& ray, const Point3& point_of_hit, const Vector3& surface_normal, const bool& front_face, Color& attenuation, Ray& scattered_ray) override;
+    Dielectric(Texture* albedo, double index_of_refraction);
+    virtual bool scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) override;
 };
 
 

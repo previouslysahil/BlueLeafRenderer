@@ -58,9 +58,24 @@ bool Sphere::hit(const Ray& ray, ObjectInfo& found_info, double t_min, double t_
     info.point_of_hit = info.ray_of_hit.at(info.t);
     Vector3 outward_normal = (info.point_of_hit - center) / radius;
     set_surface_normal(info.ray_of_hit, outward_normal);
+    set_uv(outward_normal, info.u, info.v);
     // Send our info back
     found_info = info;
     return true;
+}
+
+/// Maps the coordinates of a point on a sphere to a plane representing our texture
+/// using u and v to mark our horizontal and vertical position respectively
+/// - Parameters:
+///   - point: The point on our sphere to be mapped
+///   - u: The mapped horizontal position of our point on the texture
+///   - v: The mapped vertical position of our point on the texture
+void Sphere::set_uv(const Point3& point, double& u, double& v) {
+    double theta = acos(-point.y);
+    double phi = atan2(-point.z, point.x + pi);
+    
+    u = phi / (2 * pi);
+    v = theta / pi;
 }
 
 /// A box around our sphere object used to speed up hit detection

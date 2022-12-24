@@ -19,6 +19,8 @@ public:
     
     virtual bool hit(const Ray& ray, ObjectInfo& info, double t_min, double t_max) override;
     virtual AABB make_bounding_box() const override;
+private:
+    void set_uv(const Point3& point, double& u, double& v);
 };
 
 #endif /* Sphere_hpp */

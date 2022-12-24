@@ -72,7 +72,7 @@ void BVH::print_tree_helper(int idx) {
         for (int i = 0; i < node.objs_count; i++) {
             // Get our object through out objects index array since node tracs objects_idx
             Object* object = objects[objects_idx[node.first_obj_idx + i]];
-            std::cout << object->info.material->albedo.g;
+            std::cout << object->info.material->albedo->value(object->info.u, object->info.v, object->info.point_of_hit).g;
             if (i != node.objs_count - 1) {
                 std::cout << " ";
             }

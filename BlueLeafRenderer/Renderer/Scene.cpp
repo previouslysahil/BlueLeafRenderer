@@ -31,6 +31,13 @@ void Scene::deallocate_materials() {
     }
 }
 
+/// Deallocates all our heap allocated textures in our scene
+void Scene::deallocate_textures() {
+    for (int i = 0; i < textures.size(); i++) {
+        delete textures[i];
+    }
+}
+
 /// Adds a object to our scene
 /// - Parameter object: The object to be added
 void Scene::add(Object* object) {
@@ -48,6 +55,12 @@ void Scene::add(BVH& bvh) {
 /// - Parameter material: The object to be added
 void Scene::add(Material* material) {
     materials.push_back(material);
+}
+
+/// Adds a textures to our scene
+/// - Parameter texture: The object to be added
+void Scene::add(Texture* texture) {
+    textures.push_back(texture);
 }
 
 /// Uses our ray and min and max ts to determine whether we have hit an object

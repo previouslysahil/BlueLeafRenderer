@@ -13,12 +13,16 @@
 #include "Material.hpp"
 #include "AABB.hpp"
 
+class Material;  // Circular dependency between Object.hpp and Material.hpp
+
 struct ObjectInfo {
     Point3 point_of_hit;
     Vector3 surface_normal;
     Ray ray_of_hit;
     Material* material;
     double t;
+    double u;
+    double v;
     bool front_face;
 };
 
