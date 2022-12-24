@@ -29,10 +29,19 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     camera(double(width), double(height), Point3(3, 1.5, 3.5), Point3(0.12, -0.05, -1), Vector3(0, 1, 0), 20, 0.1)
 {
     // Our textures (just solid colors for now)
-    SolidColor* tex_ground = new SolidColor(0.3, 0.2, 0.8);
+    SolidColor* tex_ground_1 = new SolidColor(0.4, 0.5, 0.7);
+    SolidColor* tex_ground_2 = new SolidColor(0.24, 0.34, 0.74);
+    CheckerTexture* tex_ground = new CheckerTexture(tex_ground_1, tex_ground_2, 2);
     SolidColor* tex_diffuse = new SolidColor(0.86, 0.84, 0.943);
     SolidColor* tex_glass = new SolidColor(0.95, 0.97, 1);
     SolidColor* tex_metal = new SolidColor(0.9, 0.6, 0.5);
+    // Add to scene so we can manage memory properly
+    scene.add(tex_ground_1);
+    scene.add(tex_ground_2);
+    scene.add(tex_ground);
+    scene.add(tex_diffuse);
+    scene.add(tex_glass);
+    scene.add(tex_metal);
     // Our materials
     Lambertian* mat_ground = new Lambertian(tex_ground);
     Lambertian* mat_diffuse = new Lambertian(tex_diffuse);

@@ -31,5 +31,17 @@ private:
     Color color_value;
 };
 
+class CheckerTexture: public Texture {
+public:
+    CheckerTexture();
+    CheckerTexture(SolidColor* color1, SolidColor* color2, double scale);
+    
+    virtual Color value(double u, double v, const Point3& point_of_hit) const override;
+private:
+    SolidColor* odd;
+    SolidColor* even;
+    double scale;
+};
+
 
 #endif /* Texture_hpp */

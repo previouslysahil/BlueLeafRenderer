@@ -7,6 +7,8 @@
 
 #include "Texture.hpp"
 
+#include <cmath>
+
 Texture::Texture() {}
 
 SolidColor::SolidColor(): color_value() {}
@@ -22,4 +24,24 @@ SolidColor::SolidColor(double red, double green, double blue): color_value(red, 
 ///   - point_of_hit: The point our object was hit at
 Color SolidColor::value(double u, double v, const Point3& point_of_hit) const {
     return color_value;
+}
+
+CheckerTexture::CheckerTexture(): odd(nullptr), even(nullptr) {}
+
+CheckerTexture::CheckerTexture(SolidColor* odd, SolidColor* even, double scale): odd(odd), even(even), scale(scale) {}
+
+/// CheckerTexture will alternate between our odd or even color to generate
+/// our grid texture based on the multiplied sine values being less than 0 or not
+/// - Parameters:
+///   - u: The horizontal position of our object mapped to texture
+///   - v: The vertical position of our object mapped to texture
+///   - point_of_hit: The point our object was hit at
+Color CheckerTexture::value(double u, double v, const Point3& point_of_hit) const {
+    double sines = sin(scale * point_of_hit.x) * sin(scale * point_of_hit.y) * sin(scale * point_of_hit.z);
+    
+    if (sines < 0) {
+        return odd->value(u, v, point_of_hit);
+    } else {
+        return even->value(u, v, point_of_hit);
+    }
 }
