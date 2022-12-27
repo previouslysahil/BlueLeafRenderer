@@ -10,6 +10,7 @@
 
 #include "Color.hpp"
 #include "Vector3.hpp"
+#include "Perlin.hpp"
 
 class Texture {
 public:
@@ -40,6 +41,17 @@ public:
 private:
     SolidColor* odd;
     SolidColor* even;
+    double scale;
+};
+
+class NoiseTexture: public Texture {
+public:
+    NoiseTexture();
+    NoiseTexture(double scale);
+    
+    virtual Color value(double u, double v, const Point3& point_of_hit) const override;
+public:
+    Perlin perlin;
     double scale;
 };
 

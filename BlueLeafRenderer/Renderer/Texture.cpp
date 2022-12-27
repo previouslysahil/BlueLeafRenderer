@@ -6,6 +6,7 @@
 //
 
 #include "Texture.hpp"
+#include "LinearAlgebra.hpp"
 
 #include <cmath>
 
@@ -44,4 +45,18 @@ Color CheckerTexture::value(double u, double v, const Point3& point_of_hit) cons
     } else {
         return even->value(u, v, point_of_hit);
     }
+}
+
+NoiseTexture::NoiseTexture(): perlin(Perlin()), scale(1) {}
+
+NoiseTexture::NoiseTexture(double scale): perlin(Perlin()), scale(scale) {}
+
+/// NoiseTexture will use perlin noise to generate our color value
+/// at the point of hit coordinate
+/// - Parameters:
+///   - u: The horizontal position of our object mapped to texture
+///   - v: The vertical position of our object mapped to texture
+///   - point_of_hit: The point our object was hit at
+Color NoiseTexture::value(double u, double v, const Point3& point_of_hit) const {
+    return Color(1, 1, 1) * 0.5 * (perlin.noise(point_of_hit * scale) + 1.0);
 }

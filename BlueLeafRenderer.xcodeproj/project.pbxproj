@@ -21,6 +21,8 @@
 		64907CDE2930420700A1C486 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CDC2930420700A1C486 /* Scene.cpp */; };
 		64907CE1293073C500A1C486 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64907CDF293073C500A1C486 /* Camera.cpp */; };
 		64AD50FD2956777F00C1C3DA /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64AD50FB2956777F00C1C3DA /* Texture.cpp */; };
+		64AD5100295A357100C1C3DA /* Perlin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64AD50FE295A357100C1C3DA /* Perlin.cpp */; };
+		64AD5103295A4BC600C1C3DA /* Triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64AD5101295A4BC600C1C3DA /* Triangle.cpp */; };
 		64B144F12931976800265549 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64B144F02931976800265549 /* Renderer.swift */; };
 		64BD3527293299A3004FC9ED /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD3525293299A3004FC9ED /* Object.cpp */; };
 		64BD352A2932A366004FC9ED /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BD35282932A366004FC9ED /* Material.cpp */; };
@@ -58,6 +60,10 @@
 		64907CE22930785000A1C486 /* Utility.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Utility.hpp; sourceTree = "<group>"; };
 		64AD50FB2956777F00C1C3DA /* Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
 		64AD50FC2956777F00C1C3DA /* Texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
+		64AD50FE295A357100C1C3DA /* Perlin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Perlin.cpp; sourceTree = "<group>"; };
+		64AD50FF295A357100C1C3DA /* Perlin.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Perlin.hpp; sourceTree = "<group>"; };
+		64AD5101295A4BC600C1C3DA /* Triangle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Triangle.cpp; sourceTree = "<group>"; };
+		64AD5102295A4BC600C1C3DA /* Triangle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Triangle.hpp; sourceTree = "<group>"; };
 		64B144F02931976800265549 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		64BD3525293299A3004FC9ED /* Object.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Object.cpp; sourceTree = "<group>"; };
 		64BD3526293299A3004FC9ED /* Object.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Object.hpp; sourceTree = "<group>"; };
@@ -145,6 +151,8 @@
 				64BD3526293299A3004FC9ED /* Object.hpp */,
 				6485FDE0293B060C00A17EB9 /* Sphere.cpp */,
 				6485FDE1293B060C00A17EB9 /* Sphere.hpp */,
+				64AD5101295A4BC600C1C3DA /* Triangle.cpp */,
+				64AD5102295A4BC600C1C3DA /* Triangle.hpp */,
 				64BD35282932A366004FC9ED /* Material.cpp */,
 				64BD35292932A366004FC9ED /* Material.hpp */,
 				64BD352D2936BAAC004FC9ED /* AABB.cpp */,
@@ -153,6 +161,8 @@
 				64BD353129370F6E004FC9ED /* BVH.hpp */,
 				64AD50FB2956777F00C1C3DA /* Texture.cpp */,
 				64AD50FC2956777F00C1C3DA /* Texture.hpp */,
+				64AD50FE295A357100C1C3DA /* Perlin.cpp */,
+				64AD50FF295A357100C1C3DA /* Perlin.hpp */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -231,12 +241,14 @@
 				64907CD2292FFF9F00A1C486 /* Ray.cpp in Sources */,
 				64BD352C29355839004FC9ED /* RendererView.swift in Sources */,
 				64BD352A2932A366004FC9ED /* Material.cpp in Sources */,
+				64AD5103295A4BC600C1C3DA /* Triangle.cpp in Sources */,
 				64AD50FD2956777F00C1C3DA /* Texture.cpp in Sources */,
 				6480A477292F2D9200C6F19C /* Renderer.cpp in Sources */,
 				64907CCC292FF7EB00A1C486 /* Color.cpp in Sources */,
 				6480A44D292F09F000C6F19C /* ContentView.swift in Sources */,
 				64BD3527293299A3004FC9ED /* Object.cpp in Sources */,
 				6485FDE2293B060C00A17EB9 /* Sphere.cpp in Sources */,
+				64AD5100295A357100C1C3DA /* Perlin.cpp in Sources */,
 				64B144F12931976800265549 /* Renderer.swift in Sources */,
 				64BD353229370F6E004FC9ED /* BVH.cpp in Sources */,
 				645D3677293150D30062DA78 /* RendererWrapper.cpp in Sources */,

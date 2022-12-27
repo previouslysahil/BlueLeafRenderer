@@ -7,6 +7,7 @@
 
 #include "Renderer.hpp"
 #include "Sphere.hpp"
+#include "Triangle.hpp"
 #include "Utility.hpp"
 
 #include <cmath>
@@ -34,7 +35,8 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     CheckerTexture* tex_ground = new CheckerTexture(tex_ground_1, tex_ground_2, 2);
     SolidColor* tex_diffuse = new SolidColor(0.86, 0.84, 0.943);
     SolidColor* tex_glass = new SolidColor(0.95, 0.97, 1);
-    SolidColor* tex_metal = new SolidColor(0.9, 0.6, 0.5);
+    NoiseTexture* tex_metal = new NoiseTexture(2);
+    SolidColor* tex_triangle = new SolidColor(0.92, 0.80, 0.853);
     // Add to scene so we can manage memory properly
     scene.add(tex_ground_1);
     scene.add(tex_ground_2);
@@ -42,16 +44,19 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     scene.add(tex_diffuse);
     scene.add(tex_glass);
     scene.add(tex_metal);
+    scene.add(tex_triangle);
     // Our materials
     Lambertian* mat_ground = new Lambertian(tex_ground);
     Lambertian* mat_diffuse = new Lambertian(tex_diffuse);
     Dielectric* mat_glass = new Dielectric(tex_glass, 1.5);
     Metal* mat_metal = new Metal(tex_metal, 0.1);
+    Lambertian* mat_triangle = new Lambertian(tex_triangle);
     // Add to scene so we can manage memory properly
     scene.add(mat_ground);
     scene.add(mat_diffuse);
     scene.add(mat_glass);
     scene.add(mat_metal);
+    scene.add(mat_triangle);
     // Make a bvh for our following code
     BVH bvh;
     // Make a giant cube of circles to test our bvh
@@ -75,11 +80,15 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     Sphere* left = new Sphere(Point3(-1, 0, -1), 0.5, mat_glass);
     Sphere* left_in = new Sphere(Point3(-1, 0, -1), -0.45, mat_glass);
     Sphere* right = new Sphere(Point3(1, 0, -1), 0.5, mat_metal);
+    Triangle* tri = new Triangle(Point3(-0.5, -0.5, -0.5), Point3(-0.5, 0.5, -0.5), Point3(0.5, 0.5, -0.5), mat_triangle);
+    Triangle* tri2 = new Triangle(Point3(0.5, -0.5, -0.5), Point3(0.5, 0.5, -0.5), Point3(-0.5, -0.5, -0.5), mat_triangle);
     // Add these objects to our scene
     scene.add(ground);
     scene.add(left);
     scene.add(left_in);
     scene.add(right);
+    scene.add(tri);
+    scene.add(tri2);
 }
 
 /// Deallocates all our heap allocated scene structures
@@ -182,40 +191,6 @@ void Renderer::render_buffer(uint32_t* buffer, int curr_sample) {
             buffer[buffer_pos] = gammad_pixel_color.rgba();
         }
     }
-//    // Tiled rendering tile_size by tile_size pixel tiles to increase cache hits since
-//    // rays next to each other usually hit the same object
-//    int tile_size = 256;
-//    int h_rm = height % tile_size;
-//    int w_rm = width % tile_size;
-//    for (int j = height - 1; j >= h_rm - 1; j -= tile_size) {
-//        for (int i = 0; i <= width - w_rm; i += tile_size) {
-//            for (int m = 0; m < (j == h_rm - 1 ? h_rm : tile_size); m++) {
-//                for (int n = 0; n < (i == width - w_rm ? w_rm : tile_size); n++) {
-//                    // std::cout << "j: " << j << " m: " << m << " i: " << i << " n: " << n << " h_rm: " << h_rm << " w_rm: " << w_rm << std::endl;
-//                    // Map our loop to the position in our render buffer
-//                    buffer_pos = (i + n) + width * abs(j - m - height + 1);
-//                    // Get the points on our viewing grid we will cast our ray too
-//                    // we ad randomness for anti aliasing
-//                    double u = (double(i + n) + random_double()) / double(width - 1);
-//                    double v = (double(j - m) + random_double()) / double(height - 1);
-//                    // Cast our ray from the camera origin to our u,v coordinate
-//                    // on the viewport
-//                    Ray ray = camera.create_ray(u, v);
-//                    // Make our color for this pixel by creating a rolling average using the previous pixel color
-//                    // that contains the previously averaged pixels
-//                    Color curr_pixel_color = ray_color(ray, scene, max_bounces) * curr_pixel_color_invariant;
-//                    // The bias favoring our previous pixels should be much higher than the current pixel
-//                    Color prev_pixel_color = pixel_colors[buffer_pos] * prev_pixel_color_invariant;
-//                    // Add together to get final result
-//                    pixel_colors[buffer_pos] = prev_pixel_color + curr_pixel_color;
-//                    // Gamma correct before we send this pixel color to our buffer
-//                    Color gammad_pixel_color = sqrt_color(pixel_colors[buffer_pos]);
-//                    // Convert our double color values to a single uint32 RGBA variable
-//                    buffer[buffer_pos] = gammad_pixel_color.rgba();
-//                }
-//            }
-//        }
-//    }
 }
 
 /// This function will render our image and generate the image buffer storing the pixel
