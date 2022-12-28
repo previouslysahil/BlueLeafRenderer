@@ -24,6 +24,7 @@ public:
     virtual ~Material() = default;
     
     virtual bool scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) = 0;
+    virtual Color emitted(double u, double v, const Point3& point_of_hit) const;
 };
 
 class Lambertian: public Material {
@@ -48,5 +49,14 @@ public:
     virtual bool scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) override;
 };
 
+class DiffuseLight: public Material  {
+public:
+    DiffuseLight(Texture* a);
+
+    virtual bool scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) override;
+    virtual Color emitted(double u, double v, const Point3& point_of_hit) const override;
+public:
+    Texture* emit;
+};
 
 #endif /* Material_hpp */

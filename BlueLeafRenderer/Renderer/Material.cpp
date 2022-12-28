@@ -27,11 +27,22 @@ Lambertian::Lambertian(Texture* albedo): Material(albedo) {}
 ///   - roughness: The roughness of our metal
 Metal::Metal(Texture* albedo, double roughness): Material(albedo), roughness(roughness < 1 ? roughness : 1) {}
 
+DiffuseLight::DiffuseLight(Texture* a) : emit(a) {}
+
 /// Initalizes albedo and roughness
 /// - Parameters:
 ///   - albedo: The color of the metal
 ///   - index_of_refraction: The roughness of our metal
 Dielectric::Dielectric(Texture* albedo, double index_of_refraction): Material(albedo), index_of_refraction(index_of_refraction) {}
+
+/// The amount of light that this material emits
+/// - Parameters:
+///   - u: Used for UV coords
+///   - v: Used for UV coords
+///   - point_of_hit: The point our object this material is used by was hit at
+Color Material::emitted(double u, double v, const Point3& point_of_hit) const {
+    return Color(0, 0, 0);
+}
 
 /// Scatters using lambertian scattering which gets a random point on the unit sphere
 /// of our point of hit and uses this to create the vector directino of our scatter
@@ -125,4 +136,26 @@ bool Dielectric::scatter(const Ray& ray, const ObjectInfo& info, Color& attenuat
     attenuation = albedo->value(info.u, info.v, info.point_of_hit);
     // Always scatters
     return true;
+}
+
+/// Diffuse Light doesn't scatter any rays only emits material
+/// - Parameters:
+///   - ray: The incoming ray that we will use to create our new scattered ray
+///   - info: Important hit information to be used for scattering such as the point
+///   our incoming ray hit our material's object at, the surface normal at this point, and
+///   the direction of our surface normal (in/ out)
+///   - attenuation: The color that we will assign based on the materials color
+///   at this point
+///   - scattered_ray: The new ray that we will create of the above params
+bool DiffuseLight::scatter(const Ray& ray, const ObjectInfo& info, Color& attenuation, Ray& scattered_ray) {
+    return false;
+}
+
+/// The amount of light that this material emits
+/// - Parameters:
+///   - u: Used for UV coords
+///   - v: Used for UV coords
+///   - point_of_hit: The point our object this material is used by was hit at
+Color DiffuseLight::emitted(double u, double v, const Point3& point_of_hit) const {
+    return emit->value(u, v, point_of_hit);
 }

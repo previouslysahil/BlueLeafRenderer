@@ -30,13 +30,14 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     camera(double(width), double(height), Point3(3, 1.5, 3.5), Point3(0.12, -0.05, -1), Vector3(0, 1, 0), 20, 0.1)
 {
     // Our textures (just solid colors for now)
-    SolidColor* tex_ground_1 = new SolidColor(0.4, 0.5, 0.7);
-    SolidColor* tex_ground_2 = new SolidColor(0.24, 0.34, 0.74);
-    CheckerTexture* tex_ground = new CheckerTexture(tex_ground_1, tex_ground_2, 2);
-    SolidColor* tex_diffuse = new SolidColor(0.86, 0.84, 0.943);
-    SolidColor* tex_glass = new SolidColor(0.95, 0.97, 1);
-    NoiseTexture* tex_metal = new NoiseTexture(2);
-    SolidColor* tex_triangle = new SolidColor(0.92, 0.80, 0.853);
+    SolidColor* tex_ground_1 = new SolidColor(0.99, 0.98, 0.96);
+    SolidColor* tex_ground_2 = new SolidColor(0.1, 0.11, 0.13);
+    CheckerTexture* tex_ground = new CheckerTexture(tex_ground_1, tex_ground_2, 5);
+    SolidColor* tex_diffuse = new SolidColor(0.938, 0.854, 0.793);
+    SolidColor* tex_glass = new SolidColor(0.891, 0.861, 0.975);
+    NoiseTexture* tex_metal = new NoiseTexture(5);
+    SolidColor* tex_triangle = new SolidColor(0.879, 0.441, 0.194);
+    SolidColor* tex_triangle_diffuse = new SolidColor(10, 8, 6);
     // Add to scene so we can manage memory properly
     scene.add(tex_ground_1);
     scene.add(tex_ground_2);
@@ -45,18 +46,21 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     scene.add(tex_glass);
     scene.add(tex_metal);
     scene.add(tex_triangle);
+    scene.add(tex_triangle_diffuse);
     // Our materials
     Lambertian* mat_ground = new Lambertian(tex_ground);
     Lambertian* mat_diffuse = new Lambertian(tex_diffuse);
     Dielectric* mat_glass = new Dielectric(tex_glass, 1.5);
     Metal* mat_metal = new Metal(tex_metal, 0.1);
     Lambertian* mat_triangle = new Lambertian(tex_triangle);
+    DiffuseLight* mat_triangle_diffuse = new DiffuseLight(tex_triangle_diffuse);
     // Add to scene so we can manage memory properly
     scene.add(mat_ground);
     scene.add(mat_diffuse);
     scene.add(mat_glass);
     scene.add(mat_metal);
     scene.add(mat_triangle);
+    scene.add(mat_triangle_diffuse);
     // Make a bvh for our following code
     BVH bvh;
     // Make a giant cube of circles to test our bvh
@@ -77,11 +81,13 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     scene.add(bvh);
     // Our non bvh'd objects
     Sphere* ground = new Sphere(Point3(0, -100.5, -1), 100, mat_ground);
-    Sphere* left = new Sphere(Point3(-1, 0, -1), 0.5, mat_glass);
-    Sphere* left_in = new Sphere(Point3(-1, 0, -1), -0.45, mat_glass);
+    Sphere* left = new Sphere(Point3(-1, 0, -0.9), 0.5, mat_glass);
+    Sphere* left_in = new Sphere(Point3(-1, 0, -0.9), -0.45, mat_glass);
     Sphere* right = new Sphere(Point3(1, 0, -1), 0.5, mat_metal);
-    Triangle* tri = new Triangle(Point3(-0.5, -0.5, -0.5), Point3(-0.5, 0.5, -0.5), Point3(0.5, 0.5, -0.5), mat_triangle);
-    Triangle* tri2 = new Triangle(Point3(0.5, -0.5, -0.5), Point3(0.5, 0.5, -0.5), Point3(-0.5, -0.5, -0.5), mat_triangle);
+    Triangle* tri = new Triangle(Point3(-0.5, -0.5, -0.4), Point3(-0.5, 0.5, -0.4), Point3(0.5, 0.5, -0.4), mat_triangle);
+    Triangle* tri2 = new Triangle(Point3(0.5, -0.5, -0.4), Point3(0.5, 0.5, -0.4), Point3(-0.5, -0.5, -0.4), mat_triangle);
+    Triangle* tri3 = new Triangle(Point3(-0.5, 1, -0.5 + 0.5), Point3(-0.5, 1, -1.5 + 0.5), Point3(0.5, 1, -1.5 + 0.5), mat_triangle_diffuse);
+    Triangle* tri4 = new Triangle(Point3(0.5, 1, -1.5 + 0.5), Point3(0.5, 1, -0.5 + 0.5), Point3(-0.5, 1, -0.5 + 0.5), mat_triangle_diffuse);
     // Add these objects to our scene
     scene.add(ground);
     scene.add(left);
@@ -89,6 +95,8 @@ Renderer::Renderer(int width, int height, int samples_per_pixel, int max_bounces
     scene.add(right);
     scene.add(tri);
     scene.add(tri2);
+    scene.add(tri3);
+    scene.add(tri4);
 }
 
 /// Deallocates all our heap allocated scene structures
@@ -106,51 +114,28 @@ void Renderer::deallocate_scene() {
 /// - Parameter scene: Scene containing our object
 /// - Parameter bounces: The maxium bounces we should calculate
 Color Renderer::ray_color(const Ray& ray, Scene& scene, int bounces) const {
-    // Values to track the ray and color after each
-    // bounce
-    Ray curr_ray(ray);
-    // Init curr attenuation to 1 which will properly
-    // multiply in any situation
-    Color curr_attenuation(1, 1, 1);
-    // Iterate until bounces, loop may exit early if
-    // we are unable to scatter a ray or hit our sky
-    for (int i = 0; i < bounces; i++) {
-        // ObjectInfo struct for nearest object hit information
-        ObjectInfo nearest_object;
-        // Find an object to hit
-        if (scene.get_nearest_object(curr_ray, nearest_object, 0.001, std::numeric_limits<double>::infinity())) {
-            // Properties to be populated by our material scattering function
-            // for proper ray casting and color
-            Ray scattered_ray;
-            Color scattered_attenuation;
-            // Now we attempt to scatter our ray using the object's material's
-            // scattering function
-            if (nearest_object.material->scatter(curr_ray, nearest_object, scattered_attenuation, scattered_ray)) {
-                // We use our scattered attenuation (which is the color of our material)
-                // to further color our ray using the existing attenuation
-                curr_attenuation = scattered_attenuation * curr_attenuation;
-                // We also make set our scattered ray to our curr ray for next iteration
-                curr_ray = scattered_ray;
-            } else {
-                // Unable to scatter this ray so return black because our ray
-                // is basically absorbed (no need to multiply by curr_attenuation
-                // since it will multiply to black)
-                return Color(0, 0, 0);
-            }
-        } else {
-            // Otherwise our ray color is the sky
-            Vector3 unit_direction = unit_vector(ray.direction);
-            double k = 0.5 * (unit_direction.y + 1.0);
-            Color sky_attenuation = Color(1, 1, 1) * (1.0 - k) + Color(0.5, 0.7, 1.0) * k;
-            // Use our sky attenuation to further color our ray using the
-            // existing attenuation
-            curr_attenuation = curr_attenuation * sky_attenuation;
-            return curr_attenuation;
-        }
+    // Bounces reached, ray absorbed so return black (no color)
+    if (bounces <= 0) {
+        return Color(0, 0, 0);
     }
-    // If we reach our bounce limit the ray is basically absorbed
-    // so we return black!
-    return Color(0, 0, 0);
+    // ObjectInfo struct for nearest object hit information
+    ObjectInfo nearest_object;
+    if (!scene.get_nearest_object(ray, nearest_object, 0.001, std::numeric_limits<double>::infinity())) {
+        return Color(0, 0, 0);
+    }
+    // Properties to be populated by our material scattering function
+    // for proper ray casting and color
+    Ray scattered_ray;
+    Color scattered_attenuation;
+    // Check if we have an light emission from this object (will be 0 for normal objects)
+    Color emitted_light = nearest_object.material->emitted(nearest_object.u, nearest_object.v, nearest_object.point_of_hit);
+    // If we don't have any scattering from this object then we only return the light emission (will hold true for diffuse light objects)
+    if (!nearest_object.material->scatter(ray, nearest_object, scattered_attenuation, scattered_ray)) {
+        return emitted_light;
+    }
+    // Else we recurse and bounce our ray one more time adding our emitted light color to our
+    // color that will be computed from all the ray bounce scatterings to occur
+    return emitted_light + scattered_attenuation * ray_color(scattered_ray, scene, bounces - 1);
 }
 
 /// This function will render our image andgenerate the image buffer storing the pixel

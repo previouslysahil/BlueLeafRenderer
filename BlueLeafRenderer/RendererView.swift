@@ -12,7 +12,7 @@ fileprivate let height = 225
 
 struct RendererView: View {
     
-    @StateObject var renderer = Renderer(width: width, height: height, samples: 100, bounces: 50)
+    @StateObject var renderer = Renderer(width: width, height: height, samples: 1000, bounces: 50)
     
     var body: some View {
         VStack {
